@@ -13,18 +13,47 @@ S2-Agent-Skill 是一个模块化技能库，包含针对不同数据处理和�
 
 ```bash
 cd /home/[你的文件夹]/.codex/
-ls
-tree -L 1
-# .
-# ├── archived_sessions
-# ├── auth.json
-# ├── config.toml
-# ├── models_cache.json
-# ├── sessions
-# ├── skills
-# └── tmp
 ```
-在这里有一个 `skills` 目录，用于存放 Agent 技能。将`Github`中所有的Skill全部放到`/skills/.system`中
+
+```bash
+.
+├── archived_sessions
+├── auth.json
+├── config.toml
+├── models_cache.json
+├── sessions
+├── skills
+└── tmp
+```
+
+在这里有一个 `skills` 目录，用于存放 Agent 技能。
+存放之后，应当类似如下结构：
+
+```bash
+.
+├── pdf
+│   ├── forms.md
+│   ├── LICENSE.txt
+│   ├── reference.md
+│   ├── scripts
+│   └── SKILL.md
+├── python-dual-mode
+│   └── SKILL.md
+├── skill-creator
+│   ├── license.txt
+│   ├── scripts
+│   └── SKILL.md
+├── skill-installer
+│   ├── LICENSE.txt
+│   ├── scripts
+│   └── SKILL.md
+└── xlsx
+    ├── LICENSE.txt
+    ├── recalc.py
+    └── SKILL.md
+```
+
+将`Github`中所有的Skill全部放到`/skills/.system`中
 编辑`config.toml`，添加如下配置：
 
 ```toml
@@ -34,3 +63,4 @@ enabled = true
 ```
 
 保存后，重启 Codex 应用即可加载新的技能库。
+
