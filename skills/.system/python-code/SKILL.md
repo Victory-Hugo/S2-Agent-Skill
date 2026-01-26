@@ -1,6 +1,6 @@
 ---
 name: python-code
-description: 编写任何(!!!)Python代码都需要遵循的格式。 
+description: 编写任何Python代码都需要遵循的规范格式。 
 ---
 
 # Python Code Format
