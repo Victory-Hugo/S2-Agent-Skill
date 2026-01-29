@@ -1,6 +1,0 @@
-# 仅同步./skills/.system目录下的文件
-/archived_sessions
-/sessions
-/tmp
-/*json
-/*.toml
