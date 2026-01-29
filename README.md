@@ -65,23 +65,6 @@ S2-Agent-Skill/
 
 编辑 `script/1-同步skill至多个agent.sh` 文件，修改配置区的参数：
 
-```bash
-# 设置源目录（通常无需修改）
-SOURCE_DIR="/mnt/f/onedrive/文档（科研）/脚本/Download/S2-Agent-Skill/skills"
-
-# 配置目标目录（根据实际情况修改）
-TARGET_DIRS=(
-    "/home/<用户名>/.codex/skills/.system"      # Codex Agent skills 目录
-    "/home/<用户名>/.claude/skills/"             # Claude Agent skills 目录
-    # "/home/<用户名>/.cursor/skills/.system"   # Cursor Agent skills 目录（可选）
-)
-```
-
-**常见目标目录路径：**
-- Codex: `~/.codex/skills/.system`
-- Claude: `~/.claude/skills/`
-- Cursor: `~/.cursor/skills/.system`
-
 #### 2. 运行同步脚本
 
 ```bash
