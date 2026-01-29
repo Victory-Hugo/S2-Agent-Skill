@@ -9,12 +9,12 @@
 
 SOURCE_DIR="/mnt/f/onedrive/文档（科研）/脚本/Download/S2-Agent-Skill/skills" #! 将此路径替换为你的 S2-Agent-Skill skills 目录路径
 
-#! codex的路径一般在 ~/.codex/skills/.system,若没有可以mkdir -p 创建
+#! codex的路径一般在 ~/.codex/skills/,若没有可以mkdir -p 创建
 #! claude的路径一般在 ~/.claude/skills/,若没有可以mkdir -p 创建
 TARGET_DIRS=(
-    "/home/luolintao/.codex/skills/.system"
+    "/home/luolintao/.codex/skills/"
     "/home/luolintao/.claude/skills/"
-    # "/home/luolintao/.cursor/skills/.system"
+    # "/home/luolintao/.cursor/skills/"
     # 可以添加更多目标目录，例如：
 )
 #* ============================================================================
