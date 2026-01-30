@@ -1,6 +1,6 @@
 ---
 name: xlsx
-description: "Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work with spreadsheets (.xlsx, .xlsm, .csv, .tsv, etc) for: (1) Creating new spreadsheets with formulas and formatting, (2) Reading or analyzing data, (3) Modify existing spreadsheets while preserving formulas, (4) Data analysis and visualization in spreadsheets, or (5) Recalculating formulas"
+description: "全面的电子表格创建、编辑与分析工具，支持公式、格式设置、数据分析和可视化。当需要处理电子表格（如 .xlsx、.xlsm、.csv、.tsv 等）时使用，包括：(1) 创建包含公式和格式的新电子表格，(2) 读取或分析数据，(3) 在保留公式的情况下修改现有电子表格，(4) 在电子表格中进行数据分析和可视化，或 (5) 重新计算公式。"
 license: Proprietary. LICENSE.txt has complete terms
 ---
 

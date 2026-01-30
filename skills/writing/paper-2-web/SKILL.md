@@ -1,6 +1,6 @@
 ---
 name: paper-2-web
-description: This skill should be used when converting academic papers into promotional and presentation formats including interactive websites (Paper2Web), presentation videos (Paper2Video), and conference posters (Paper2Poster). Use this skill for tasks involving paper dissemination, conference preparation, creating explorable academic homepages, generating video abstracts, or producing print-ready posters from LaTeX or PDF sources.
+description: 当需要将学术论文转换为宣传和展示类格式时，应使用此技能，包括交互式网站（Paper2Web）、演示视频（Paper2Video）以及会议海报（Paper2Poster）。适用于论文传播、会议准备、创建可探索的学术主页、生成视频摘要，或基于 LaTeX 或 PDF 源文件制作可直接打印的海报。
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 

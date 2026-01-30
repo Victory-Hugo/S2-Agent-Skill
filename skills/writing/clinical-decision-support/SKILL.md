@@ -1,6 +1,6 @@
 ---
 name: clinical-decision-support
-description: "Generate professional clinical decision support (CDS) documents for pharmaceutical and clinical research settings, including patient cohort analyses (biomarker-stratified with outcomes) and treatment recommendation reports (evidence-based guidelines with decision algorithms). Supports GRADE evidence grading, statistical analysis (hazard ratios, survival curves, waterfall plots), biomarker integration, and regulatory compliance. Outputs publication-ready LaTeX/PDF format optimized for drug development, clinical research, and evidence synthesis."
+description: "用于制药和临床研究环境中生成专业临床决策支持（CDS）文档，包括患者队列分析（基于生物标志物分层并结合结局分析）以及治疗推荐报告（基于循证指南并包含决策算法）。支持 GRADE 证据分级、统计分析（如风险比、 生存曲线、瀑布图）、生物标志物整合以及监管合规要求。输出为可发表级别的 LaTeX/PDF 格式，针对药物开发、临床研究和证据综合进行了优化。"
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: latex-posters
-description: "Create professional research posters in LaTeX using beamerposter, tikzposter, or baposter. Support for conference presentations, academic posters, and scientific communication. Includes layout design, color schemes, multi-column formats, figure integration, and poster-specific best practices for visual communication."
+description: "使用 LaTeX（如 beamerposter、tikzposter 或 baposter）创建专业科研海报。支持会议展示、学术海报和科学传播。包含版式设计、配色方案、多栏布局、图形整合，以及面向海报视觉传达的最佳实践。"
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 

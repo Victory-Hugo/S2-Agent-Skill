@@ -1,6 +1,6 @@
 ---
 name: venue-templates
-description: Access comprehensive LaTeX templates, formatting requirements, and submission guidelines for major scientific publication venues (Nature, Science, PLOS, IEEE, ACM), academic conferences (NeurIPS, ICML, CVPR, CHI), research posters, and grant proposals (NSF, NIH, DOE, DARPA). This skill should be used when preparing manuscripts for journal submission, conference papers, research posters, or grant proposals and need venue-specific formatting requirements and templates.
+description: 可访问主要科学出版与投稿场景的 LaTeX 模板、排版规范与提交指南，包括顶级期刊（Nature、Science、PLOS、IEEE、ACM）、学术会议（NeurIPS、ICML、CVPR、CHI）、科研海报，以及科研项目申请（NSF、NIH、DOE、DARPA）。当准备期刊投稿、会议论文、科研海报或基金申请，并需要特定会刊/期刊的格式要求与模板时，应使用此技能。
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 

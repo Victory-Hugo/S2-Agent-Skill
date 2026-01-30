@@ -1,6 +1,6 @@
 ---
 name: pptx
-description: "Presentation toolkit (.pptx). Create/edit slides, layouts, content, speaker notes, comments, for programmatic presentation creation and modification."
+description: "演示文稿工具包（.pptx）。可创建/编辑幻灯片、版式、内容、演讲者备注和批注，用于以编程方式创建和修改演示文稿。"
 license: Proprietary. LICENSE.txt has complete terms
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: scientific-critical-thinking
-description: "Evaluate research rigor. Assess methodology, experimental design, statistical validity, biases, confounding, evidence quality (GRADE, Cochrane ROB), for critical analysis of scientific claims."
+description: "评估研究严谨性。用于评估方法学、实验设计、统计学有效性、偏倚、混杂因素以及证据质量（如 GRADE、Cochrane 偏倚风险评估），以对科学结论进行批判性分析。"
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 

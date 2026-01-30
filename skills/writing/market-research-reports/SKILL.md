@@ -1,6 +1,6 @@
 ---
 name: market-research-reports
-description: "Generate comprehensive market research reports (50+ pages) in the style of top consulting firms (McKinsey, BCG, Gartner). Features professional LaTeX formatting, extensive visual generation with scientific-schematics and generate-image, deep integration with research-lookup for data gathering, and multi-framework strategic analysis including Porter's Five Forces, PESTLE, SWOT, TAM/SAM/SOM, and BCG Matrix."
+description: "描述：生成全面的市场研究报告（50 页以上），风格参考顶级咨询公司（如 McKinsey、BCG、Gartner）。具备专业的 LaTeX 排版、大量基于科学示意图和图像生成的可视化内容、与 research-lookup 深度集成以进行数据收集，以及多框架战略分析能力，包括波特五力模型（Porter’s Five Forces）、PESTLE 分析、SWOT 分析、TAM/SAM/SOM 市场规模分析和 BCG 矩阵。"
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: clinical-reports
-description: "Write comprehensive clinical reports including case reports (CARE guidelines), diagnostic reports (radiology/pathology/lab), clinical trial reports (ICH-E3, SAE, CSR), and patient documentation (SOAP, H&P, discharge summaries). Full support with templates, regulatory compliance (HIPAA, FDA, ICH-GCP), and validation tools."
+description: "用于撰写全面的临床报告，包括病例报告（遵循 CARE 指南）、诊断报告（影像学/病理学/实验室）、临床试验报告（ICH-E3、SAE、CSR）以及患者文书（SOAP 记录、病史与体格检查 H&P、出院小结）。提供完整模板支持、监管合规（HIPAA、FDA、ICH-GCP）以及验证工具。"
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 

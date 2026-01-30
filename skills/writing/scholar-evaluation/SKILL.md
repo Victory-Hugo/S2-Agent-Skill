@@ -1,4 +1,9 @@
-# Scholar Evaluation
+---
+name: scholar-evaluation
+description: "应用 ScholarEval 框架对学术与科研成果进行系统化评估。该技能基于同行评审研究评价标准，提供结构化评估方法，可对学术论文、科研项目申请书、文献综述及各类学术写作在多个质量维度上进行全面分析。"
+allowed-tools: [Read, Write, Edit, Bash]
+---
+
 
 ## Overview
 

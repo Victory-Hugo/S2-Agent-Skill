@@ -1,6 +1,6 @@
 ---
 name: treatment-plans
-description: "Generate concise (3-4 page), focused medical treatment plans in LaTeX/PDF format for all clinical specialties. Supports general medical treatment, rehabilitation therapy, mental health care, chronic disease management, perioperative care, and pain management. Includes SMART goal frameworks, evidence-based interventions with minimal text citations, regulatory compliance (HIPAA), and professional formatting. Prioritizes brevity and clinical actionability."
+description: "以 LaTeX/PDF 格式生成简明（3–4 页）、聚焦且可执行的医学治疗计划，覆盖各临床专科。支持一般内外科治疗、康复治疗、心理健康照护、慢病管理、围手术期管理与疼痛管理。包含 SMART 目标框架、循证干预措施（以最少的文本引用呈现）、合规要求（HIPAA）以及专业排版。强调简洁与临床可操作性。"
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 

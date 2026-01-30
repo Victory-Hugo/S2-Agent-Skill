@@ -1,6 +1,6 @@
 ---
 name: citation-management
-description: Comprehensive citation management for academic research. Search Google Scholar and PubMed for papers, extract accurate metadata, validate citations, and generate properly formatted BibTeX entries. This skill should be used when you need to find papers, verify citation information, convert DOIs to BibTeX, or ensure reference accuracy in scientific writing.
+description: 用于学术研究的综合文献引用管理工具。可搜索 Google Scholar 和 PubMed 论文数据库，提取准确的元数据，验证引用信息，并生成规范格式的 BibTeX 条目。当需要查找论文、核对引用信息、将 DOI 转换为 BibTeX，或在科学写作中确保参考文献准确性时，应使用此功能。
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 

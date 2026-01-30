@@ -1,6 +1,6 @@
 ---
 name: peer-review
-description: "Systematic peer review toolkit. Evaluate methodology, statistics, design, reproducibility, ethics, figure integrity, reporting standards, for manuscript and grant review across disciplines."
+description: "系统化同行评审工具包。用于评估方法学、统计分析、研究设计、可重复性、伦理合规、图像与图表完整性以及报告规范，适用于跨学科的论文和科研基金申请评审。"
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 

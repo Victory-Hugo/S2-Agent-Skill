@@ -1,6 +1,6 @@
 ---
 name: pptx-posters
-description: "Create research posters using HTML/CSS that can be exported to PDF or PPTX. Use this skill ONLY when the user explicitly requests PowerPoint/PPTX poster format. For standard research posters, use latex-posters instead. This skill provides modern web-based poster design with responsive layouts and easy visual integration."
+description: "使用 HTML/CSS 创建科研海报，并可导出为 PDF 或 PPTX。仅当用户明确要求使用 PowerPoint/PPTX 海报格式时才使用此技能；标准科研海报应优先使用 latex-posters。本技能提供基于现代 Web 的海报设计，支持响应式布局和便捷的可视化整合。"
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 

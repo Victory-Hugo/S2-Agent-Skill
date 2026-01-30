@@ -1,6 +1,6 @@
 ---
 name: research-grants
-description: "Write competitive research proposals for NSF, NIH, DOE, and DARPA. Agency-specific formatting, review criteria, budget preparation, broader impacts, significance statements, innovation narratives, and compliance with submission requirements."
+description: "撰写具有竞争力的科研项目申请书，适用于 NSF、NIH、DOE 和 DARPA。支持各机构特定格式、评审标准、预算编制、广泛影响（broader impacts）、研究意义陈述、创新性论述，以及符合提交规范的合规性要求。"
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 

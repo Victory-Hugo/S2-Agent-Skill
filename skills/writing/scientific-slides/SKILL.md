@@ -1,6 +1,6 @@
 ---
 name: scientific-slides
-description: "Build slide decks and presentations for research talks using Nano Banana Pro AI. Generates stunning PDF presentations with AI-generated slides. Use for conference presentations, seminar talks, thesis defense slides, or any scientific talk. Provides slide structure, design guidance, timing recommendations, and visual validation."
+description: "使用 Nano Banana Pro AI 构建科研报告和演示幻灯片。可生成高质量、视觉效果出色的 PDF 演示文稿，包含 AI 生成的幻灯片内容。适用于会议报告、学术研讨会报告、论文答辩幻灯片或各类科学演讲。提供幻灯片结构设计、版式与设计指导、时间安排建议以及视觉效果校验。"
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 
