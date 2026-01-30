@@ -1,6 +1,6 @@
 ---
 name: pydeseq2
-description: Differential gene expression analysis (Python DESeq2). Identify DE genes from bulk RNA-seq counts, Wald tests, FDR correction, volcano/MA plots, for RNA-seq analysis.
+description: 差异基因表达分析(Python DESeq2)。从bulk RNA-seq计数中识别差异表达基因，Wald检验，FDR校正，火山图/MA图，用于RNA-seq分析。
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.

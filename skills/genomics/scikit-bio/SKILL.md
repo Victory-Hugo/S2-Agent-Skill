@@ -1,6 +1,6 @@
 ---
 name: scikit-bio
-description: Biological data toolkit. Sequence analysis, alignments, phylogenetic trees, diversity metrics (alpha/beta, UniFrac), ordination (PCoA), PERMANOVA, FASTA/Newick I/O, for microbiome analysis.
+description: 生物数据工具包。序列分析、比对、系统发育树、多样性度量(alpha/beta, UniFrac)、排序(PCoA)、PERMANOVA、FASTA/Newick I/O，用于微生物组分析。
 license: BSD-3-Clause license
 metadata:
     skill-author: K-Dense Inc.

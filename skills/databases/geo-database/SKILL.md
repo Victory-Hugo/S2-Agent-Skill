@@ -1,6 +1,6 @@
 ---
 name: geo-database
-description: Access NCBI GEO for gene expression/genomics data. Search/download microarray and RNA-seq datasets (GSE, GSM, GPL), retrieve SOFT/Matrix files, for transcriptomics and expression analysis.
+description: 访问NCBI GEO基因表达/基因组数据库。搜索/下载微阵列和RNA测序数据集(GSE、GSM、GPL)，获取SOFT/Matrix文件，用于转录组学和表达分析。
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.

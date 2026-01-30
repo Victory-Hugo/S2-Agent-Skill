@@ -1,6 +1,6 @@
 ---
 name: scvi-tools
-description: Deep generative models for single-cell omics. Use when you need probabilistic batch correction (scVI), transfer learning, differential expression with uncertainty, or multi-modal integration (TOTALVI, MultiVI). Best for advanced modeling, batch effects, multimodal data. For standard analysis pipelines use scanpy.
+description: 单细胞组学深度生成模型。当需要概率批次校正(scVI)、迁移学习、带不确定性的差异表达或多模态集成(TOTALVI, MultiVI)时使用。最适合高级建模、批次效应、多模态数据。标准分析管道请使用scanpy。
 license: BSD-3-Clause license
 metadata:
     skill-author: K-Dense Inc.

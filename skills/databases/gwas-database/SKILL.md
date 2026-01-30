@@ -1,6 +1,6 @@
 ---
 name: gwas-database
-description: Query NHGRI-EBI GWAS Catalog for SNP-trait associations. Search variants by rs ID, disease/trait, gene, retrieve p-values and summary statistics, for genetic epidemiology and polygenic risk scores.
+description: 查询NHGRI-EBI GWAS目录中的SNP-性状关联。通过rs ID、疾病/性状、基因搜索变异，获取p值和汇总统计信息，用于遗传流行病学和多基因风险评分。
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.

@@ -1,6 +1,6 @@
 ---
 name: biopython
-description: Comprehensive molecular biology toolkit. Use for sequence manipulation, file parsing (FASTA/GenBank/PDB), phylogenetics, and programmatic NCBI/PubMed access (Bio.Entrez). Best for batch processing, custom bioinformatics pipelines, BLAST automation. For quick lookups use gget; for multi-service integration use bioservices.
+description: 综合分子生物学工具包。用于序列操作、文件解析(FASTA/GenBank/PDB)、系统发育学和程序化NCBI/PubMed访问(Bio.Entrez)。最适合批处理、定制生物信息学管道、BLAST自动化。快速查找请使用gget；多服务集成请使用bioservices。
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
