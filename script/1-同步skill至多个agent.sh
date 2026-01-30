@@ -40,6 +40,50 @@ fi
 echo -e "${GREEN}源目录: $SOURCE_DIR${NC}"
 echo ""
 
+# 全局重复检测：在处理任何目标目录之前先检测所有重复
+echo "=========================================="
+echo -e "${YELLOW}全局检查重复的 skill name...${NC}"
+declare -A GLOBAL_SKILL_NAMES=()
+declare -a GLOBAL_DUPLICATE_SKILLS=()
+
+while IFS= read -r -d '' SKILL_FILE; do
+    # 提取SKILL.md中的name字段
+    SKILL_NAME=$(awk '/^name:/ {gsub(/^name: */, ""); print; exit}' "$SKILL_FILE" 2>/dev/null)
+    
+    if [ -n "$SKILL_NAME" ]; then
+        if [[ -n "${GLOBAL_SKILL_NAMES[$SKILL_NAME]}" ]]; then
+            # 发现重复
+            if [[ ! " ${GLOBAL_DUPLICATE_SKILLS[@]} " =~ " $SKILL_NAME " ]]; then
+                GLOBAL_DUPLICATE_SKILLS+=("$SKILL_NAME")
+                echo -e "${RED}警告: 发现重复的 skill name '$SKILL_NAME'${NC}"
+                echo -e "${RED}  第一个位置: ${GLOBAL_SKILL_NAMES[$SKILL_NAME]}${NC}"
+            fi
+            echo -e "${RED}  重复位置: $SKILL_FILE${NC}"
+        else
+            GLOBAL_SKILL_NAMES["$SKILL_NAME"]="$SKILL_FILE"
+        fi
+    fi
+done < <(find "$SOURCE_DIR" -type f -name "SKILL.md" -print0)
+
+# 如果发现重复，询问是否继续
+if [ ${#GLOBAL_DUPLICATE_SKILLS[@]} -gt 0 ]; then
+    echo ""
+    echo -e "${RED}发现 ${#GLOBAL_DUPLICATE_SKILLS[@]} 个重复的 skill name。${NC}"
+    echo -e "${YELLOW}重复的名称: ${GLOBAL_DUPLICATE_SKILLS[*]}${NC}"
+    echo ""
+    read -p "是否继续同步到所有目标目录？(y/N): " CONTINUE_CHOICE
+    if [[ ! "$CONTINUE_CHOICE" =~ ^[Yy]$ ]]; then
+        echo -e "${YELLOW}已取消所有同步操作${NC}"
+        exit 0
+    fi
+    echo ""
+else
+    echo -e "${GREEN}✓ 未发现重复的 skill name${NC}"
+fi
+
+echo "=========================================="
+echo ""
+
 # 遍历所有目标目录
 for TARGET_DIR in "${TARGET_DIRS[@]}"; do
     echo "----------------------------------------"
@@ -73,6 +117,7 @@ for TARGET_DIR in "${TARGET_DIRS[@]}"; do
     declare -A USED_NAMES=()
     FOUND_COUNT=0
 
+    # 创建软链接
     while IFS= read -r -d '' SKILL_FILE; do
         SKILL_DIR=$(dirname "$SKILL_FILE")
         LINK_NAME=$(basename "$SKILL_DIR")
@@ -102,6 +147,97 @@ echo ""
 echo "----------------------------------------"
 echo -e "${GREEN}同步完成！${NC}"
 echo ""
+
+# 显示同步映射表
+echo "=========================================="
+echo -e "${GREEN}同步映射表${NC}"
+echo "=========================================="
+
+# 遍历所有目标目录，显示映射关系
+for TARGET_DIR in "${TARGET_DIRS[@]}"; do
+    # 标准化目标路径
+    if [[ "$TARGET_DIR" != "/" ]]; then
+        TARGET_DIR="${TARGET_DIR%/}"
+    fi
+    
+    if [ -d "$TARGET_DIR" ]; then
+        echo ""
+        echo -e "${YELLOW}目标目录: $TARGET_DIR${NC}"
+        echo "----------------------------------------"
+        
+        # 获取所有软链接并排序
+        LINKS=$(find "$TARGET_DIR" -maxdepth 1 -type l | sort)
+        
+        if [ -n "$LINKS" ]; then
+            # 计算最大长度用于对齐
+            MAX_SOURCE_LEN=0
+            MAX_TARGET_LEN=0
+            
+            # 创建临时数组存储映射关系
+            declare -a MAPPING_ARRAY=()
+            
+            while IFS= read -r LINK; do
+                if [ -n "$LINK" ]; then
+                    SOURCE_PATH=$(readlink "$LINK")
+                    LINK_NAME=$(basename "$LINK")
+                    
+                    # 存储映射关系
+                    MAPPING_ARRAY+=("$SOURCE_PATH|$LINK_NAME")
+                    
+                    SOURCE_LEN=${#SOURCE_PATH}
+                    TARGET_LEN=${#LINK_NAME}
+                    
+                    if [ $SOURCE_LEN -gt $MAX_SOURCE_LEN ]; then
+                        MAX_SOURCE_LEN=$SOURCE_LEN
+                    fi
+                    if [ $TARGET_LEN -gt $MAX_TARGET_LEN ]; then
+                        MAX_TARGET_LEN=$TARGET_LEN
+                    fi
+                fi
+            done <<< "$LINKS"
+            
+            # 设置最小列宽和表头长度
+            HEADER1="原地址"
+            HEADER2="软链接名称"
+            HEADER1_LEN=${#HEADER1}
+            HEADER2_LEN=${#HEADER2}
+            
+            if [ $MAX_SOURCE_LEN -lt $HEADER1_LEN ]; then
+                MAX_SOURCE_LEN=$HEADER1_LEN
+            fi
+            if [ $MAX_TARGET_LEN -lt $HEADER2_LEN ]; then
+                MAX_TARGET_LEN=$HEADER2_LEN
+            fi
+            
+            # 打印表头
+            printf "%-${MAX_SOURCE_LEN}s   →   %-${MAX_TARGET_LEN}s\n" "$HEADER1" "$HEADER2"
+            
+            # 打印分隔线
+            SEPARATOR1=$(printf '%*s' $MAX_SOURCE_LEN '' | tr ' ' '-')
+            SEPARATOR2=$(printf '%*s' $MAX_TARGET_LEN '' | tr ' ' '-')
+            printf "%s   →   %s\n" "$SEPARATOR1" "$SEPARATOR2"
+            
+            # 打印映射关系
+            for MAPPING in "${MAPPING_ARRAY[@]}"; do
+                SOURCE_PATH="${MAPPING%|*}"
+                LINK_NAME="${MAPPING#*|}"
+                printf "%-${MAX_SOURCE_LEN}s   →   %-${MAX_TARGET_LEN}s\n" "$SOURCE_PATH" "$LINK_NAME"
+            done
+            
+            LINK_COUNT=${#MAPPING_ARRAY[@]}
+            echo ""
+            echo -e "${GREEN}共 $LINK_COUNT 个软链接${NC}"
+        else
+            echo -e "${YELLOW}无软链接${NC}"
+        fi
+    else
+        echo ""
+        echo -e "${RED}目标目录不存在: $TARGET_DIR${NC}"
+    fi
+done
+
+echo ""
+echo "=========================================="
 
 # 显示当前链接状态
 echo "当前链接状态："
