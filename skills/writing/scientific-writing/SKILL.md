@@ -1,6 +1,6 @@
 ---
 name: scientific-writing
-description: "深度科研研究与写作工具的核心技能。用于撰写科学论文，采用完整段落形式（不使用项目符号列表）。采用两阶段流程：（1）使用 research-lookup 创建包含关键要点的章节大纲；（2）将大纲转换为连贯的学术行文。遵循 IMRAD 结构，支持引用格式（APA / AMA / Vancouver）、图表整合以及报告规范（CONSORT / STROBE / PRISMA），适用于科研论文与期刊投稿。"
+description: "从零开始写一篇科研论文。深度科研研究与写作工具的核心技能。用于撰写科学论文，采用完整段落形式（不使用项目符号列表）。采用两阶段流程：（1）使用 research-lookup 创建包含关键要点的章节大纲；（2）将大纲转换为连贯的学术行文。遵循 IMRAD 结构，支持引用格式（APA / AMA / Vancouver）、图表整合以及报告规范（CONSORT / STROBE / PRISMA），适用于科研论文与期刊投稿。"
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 
