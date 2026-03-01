@@ -199,16 +199,21 @@ description: 根据用户提供的分析结果、上下文信息撰写符合SCI�
 
 按以下固定顺序输出：
 
-1. `Methods and Materials (CN)`
-2. `Methods and Materials (EN)`
-3. `Results (CN)`（按 `Result ID` 子节）
-4. `Results (EN)`（按 `Result ID` 子节）
-5. `Discussion (CN)`
+### `结果解读.md`文件，包含以下内容：
+
+1. `结果 (CN)`
+2. `Results (EN)`
+3. `方法与材料(中文)`
+4. `Methods and Materials (EN)`
+5. `讨论 (CN)`
 6. `Discussion (EN)`
-7. `Skill Fusion Log`
-8. `Style Validation Report`
-9. `Completeness Checklist`
-10. `Missing/Blocked Items`（无则写 `None`）
+
+### `结果解读-完整性检查.md`文件，包含以下内容：
+
+1. `Skill Fusion Log`
+2. `Style Validation Report`
+3. `Completeness Checklist`
+4. `Missing/Blocked Items`（无则写 `None`）
 
 ## Structured Validation Artifacts
 

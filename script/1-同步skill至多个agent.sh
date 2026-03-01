@@ -14,6 +14,7 @@ SOURCE_DIR="/mnt/f/onedrive/文档（科研）/脚本/Download/S2-Agent-Skill/sk
 TARGET_DIRS=(
     "/home/luolintao/.codex/skills/"
     "/home/luolintao/.claude/skills/"
+    "/home/luolintao/.copilot/skills/"
     # "/home/luolintao/.cursor/skills/"
     # 可以添加更多目标目录，例如：
 )
