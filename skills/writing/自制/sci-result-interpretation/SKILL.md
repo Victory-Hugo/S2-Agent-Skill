@@ -1,6 +1,6 @@
 ---
 name: sci-result-interpretation
-description: 面向科研写作的结果解读技能。根据用户提供的图表、统计检验和模型输出，生成详细的 Methods and Materials、Results、Discussion 三章节双语内容（中文在前，英文在后），并提供完整性与风格检查。用于“解读图表统计结果”“补全详细方法学”“撰写结果与讨论”等场景。仅负责生成科学内容，不用于纯润色、语句打磨或文风美化；若仅需表达优化，请切换 paper-narrative-polish。
+description: 面向科研写作的结果解读技能。根据用户提供的图表、统计检验和模型输出，生成详细的 Methods and Materials、Results、Discussion 三章节双语内容（中文在前，英文在后），并提供完整性与风格检查。用于“解读图表统计结果”“补全详细方法学”“撰写结果与讨论”等场景。
 ---
 
 
@@ -10,7 +10,7 @@ description: 面向科研写作的结果解读技能。根据用户提供的图�
 
 1. 产出详细 `Methods and Materials`。
 2. 逐项解读 `Results`，并给出证据边界内的 `Discussion`。
-3. 输出中英镜像内容与结构化检查文件，便于后续交给 `paper-narrative-polish` 润色。
+3. 输出中英镜像内容与结构化检查文件。
 
 ## When To Use
 
@@ -25,9 +25,8 @@ description: 面向科研写作的结果解读技能。根据用户提供的图�
 在以下场景不要使用本技能：
 
 1. 仅需要措辞优化、语法润色、句式精炼、语气统一。
-2. 已有完整 M/R/D 内容，仅需文风提升或期刊语气打磨。
+2. 已有完整论文内容，仅需文风提升或期刊语气打磨。
 
-上述场景应使用 `paper-narrative-polish`。
 
 ## Input Contract
 
@@ -168,14 +167,6 @@ description: 面向科研写作的结果解读技能。根据用户提供的图�
 
 失败时必须列缺失项、补写、复检。
 
-## Handoff To paper-narrative-polish
-
-当用户要求“解读 + 润色”时，顺序固定：
-
-1. 先运行本技能生成科学内容。
-2. 再将 `结果解读.md` 作为输入交给 `paper-narrative-polish` 做表达优化。
-
-交接时不得改写事实、数字含义和统计结论方向。
 
 ## Final Delivery Format (Markdown)
 

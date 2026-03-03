@@ -1,6 +1,6 @@
 ---
-name: paper-narrative-polish
-description: 面向科研文稿的润色打磨技能。对已有文本进行表达层优化，包括语法修正、术语一致性、逻辑衔接和句式精炼，输出中英双语版本（中文在前，英文在后）与润色检查报告。用于“润色结果段落”“统一学术语气”“提升可读性”等场景。仅做表达优化，不做新增结果解读，不补写方法学细节，不改变事实、统计方向或结论强度。
+name: paper-narrative-rearrange
+description: 面向科研文稿的语言重新组织技能。对已有文本进行表达层优化，包括语法修正、术语一致性、逻辑衔接和句式精炼，输出中英双语版本（中文在前，英文在后）与语言重新组织检查报告。用于“语言重新组织结果段落”“统一学术语气”“提升可读性”等场景。仅做表达优化，不做新增结果解读，不补写方法学细节，不改变事实、统计方向或结论强度。
 ---
 
 
@@ -16,29 +16,21 @@ description: 面向科研文稿的润色打磨技能。对已有文本进行表�
 
 在以下场景使用本技能：
 
-1. 已有初稿，需要润色到投稿风格。
+1. 已有初稿，需要语言重新组织到投稿风格。
 2. 需要统一术语、修正语言问题、增强可读性。
 3. 需要在不改事实前提下进行篇章精修。
-4. 输入来自 `结果解读.md`，希望进行后处理打磨。
 
-## When Not To Use
 
-在以下场景不要使用本技能：
 
-1. 用户要求新增或补全 `Methods and Materials`、`Results`、`Discussion` 科学内容。
-2. 用户要求解读图表、统计检验或模型输出。
-3. 输入是原始日志，且尚未形成可发表结构的科学草稿。
-
-上述场景应先使用 `sci-result-interpretation`。
 
 ## Input Contract
 
 1. `source_text`（必填）
-   待润色文本，可为原始段落或 `结果解读.md`。
+   待重新组织文本，可为原始段落或 `结果解读.md`。
 2. `target_style` (optional)
    目标语气/期刊风格，默认 `SCI`。
-3. `sections_to_polish` (optional)
-   需润色章节范围；未指定时按全文处理。
+3. `sections_to_rearrange` (optional)
+   需重新组织章节范围；未指定时按全文处理。
 4. `term_glossary_optional` (optional)
    术语对照、变量命名规范、缩写表。
 5. `length_constraints_optional` (optional)
@@ -46,7 +38,7 @@ description: 面向科研文稿的润色打磨技能。对已有文本进行表�
 
 ## Preserve Constraints (Hard Rules)
 
-润色过程必须保持以下不变：
+重新组织过程必须保持以下不变：
 
 1. 章节结构与标题层级。
 2. 变量名、缩写、实体命名。
@@ -63,11 +55,11 @@ description: 面向科研文稿的润色打磨技能。对已有文本进行表�
 
 1. 解析输入并识别章节边界。
 2. 建立术语与变量一致性映射。
-3. 逐段润色：语法、措辞、逻辑衔接、句式精炼。
+3. 逐段重新组织：语法、措辞、逻辑衔接、句式精炼。
 4. 执行“保持约束”检查与风险标记。
-5. 输出润色结果与检查报告。
+5. 输出重新组织结果与检查报告。
 
-## Polishing Strategy
+## Rearrange Strategy
 
 逐段执行以下动作：
 
@@ -87,27 +79,19 @@ description: 面向科研文稿的润色打磨技能。对已有文本进行表�
 
 必要时附简短修复建议。
 
-## Handoff Rules With sci-result-interpretation
-
-若用户同时要求“解读 + 润色”，顺序固定：
-
-1. 先由 `sci-result-interpretation` 生成科学内容。
-2. 再以 `结果解读.md` 作为本技能输入。
-
-本技能只负责表达优化，不回填科学内容空缺。
 
 ## Final Delivery Format (Markdown)
 
 固定输出两个文件：
 
-### `润色结果.md`
+### `重新组织结果.md`
 
-1. `润色后文本 (中文)`
-2. `Polished Text (EN)`
+1. `重新组织后文本 (中文)`
+2. `Rearranged Text (EN)`
 
 若输入包含章节结构，则保持原章节顺序与标题。
 
-### `润色检查.md`
+### `重新组织检查.md`
 
 1. `Preserve Constraints Check`
 2. `Terminology Consistency Check`
