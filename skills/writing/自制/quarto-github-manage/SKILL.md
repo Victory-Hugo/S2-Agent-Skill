@@ -1,6 +1,6 @@
 ---
 name: quarto-github-repo-structure
-description: "构建或审查可与 `quarto use template owner/repo` 配合使用的 Quarto GitHub 模板仓库。适用于项目起始模板、带 `_extensions` 的格式或期刊扩展起始模板，以及自定义项目类型扩展起始模板。强制要求正确的文件放置、Quarto 复制与忽略行为、扩展布局及渲染验证。"
+description: "组织Quarto文件内容结构至Github要求。确保用户通过`quarto use template`命令获得可立即渲染的项目。"
 ---
 
 # Quarto 模板仓库结构
