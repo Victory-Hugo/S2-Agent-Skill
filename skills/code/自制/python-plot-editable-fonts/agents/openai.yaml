@@ -1,0 +1,4 @@
+interface:
+  display_name: "Python Plot Editable Fonts"
+  short_description: "Editable vector fonts for Python plots"
+  default_prompt: "Use $python-plot-editable-fonts to configure editable vector fonts before generating Python data visualizations."
