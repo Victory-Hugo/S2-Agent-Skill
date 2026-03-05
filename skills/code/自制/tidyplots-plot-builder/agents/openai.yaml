@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tidyplots Plot Builder"
+  short_description: "根据需求生成 tidyplots 绘图代码与排错方案"
+  default_prompt: "Use $tidyplots-plot-builder to create tidyplots code from my data and chart goal."
