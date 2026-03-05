@@ -15,6 +15,7 @@ TARGET_DIRS=(
     "/home/luolintao/.codex/skills/"
     "/home/luolintao/.claude/skills/"
     "/home/luolintao/.copilot/skills/"
+    "/mnt/c/Users/Administrator/.codex/vendor_imports/skills"
     # "/home/luolintao/.cursor/skills/"
     # 可以添加更多目标目录，例如：
 )
