@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pipeline Coding Standard"
+  short_description: "规范 shell 主控、多模块数据处理流水线的项目组织与传参方式"
+  default_prompt: "用这个 skill 组织或重构科研/分析流水线项目，要求总控脚本 + 独立模块脚本、单文件单语言、conf/Config.json 配置驱动、模块禁止硬编码。"
