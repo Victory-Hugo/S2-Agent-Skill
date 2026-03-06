@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gotree"
+  short_description: "使用 Gotree 进行系统发育树处理、重定根、比较与导出"
+  default_prompt: "Use $gotree to inspect my phylogenetic tree files and produce the exact gotree command pipeline for rerooting, pruning, comparing, or drawing them."
