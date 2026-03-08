@@ -22,6 +22,7 @@ description: 规范科研和数据处理流水线项目的代码组织方式。�
 - pipe/
 - script/
 - python/
+- output/
 - src/
 ```
 
@@ -30,6 +31,7 @@ description: 规范科研和数据处理流水线项目的代码组织方式。�
 - `pipe/`：总控脚本。负责读取配置、检查依赖、建目录、组织流程、调用模块。
 - `script/`：shell 辅助脚本。只放辅助命令，不承载业务算法。
 - `python/`：只放 Python 模块。
+- `output/`：统一输出目录。
 - `src/`：放 R、C++ 或其他非 Python 模块。
 - `conf/`：统一配置入口，固定使用 `conf/Config.json`。
 
