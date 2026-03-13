@@ -1,6 +1,6 @@
 ---
 name: pipeline-coding-standard
-description: 规范科研和数据处理流水线项目的代码组织方式。用于新建或重构 bash/shell 主控加 Python/R/C++ 模块的分析流程、审查项目结构是否合规、或把单文件脚本改造成总控脚本加独立模块脚本模式。要求统一目录为 conf、pipe、script、python、src，禁止在单个文件内混写多种语言，禁止在模块中硬编码绝对路径和运行参数，要求总控脚本从 conf/Config.json 读取配置并通过命名 CLI 参数向模块传递。仅适用于科研/分析流水线；不要用于普通单文件小工具、Web 前端、通用库开发或 Notebook 探索分析。
+description: 规范科研和数据处理流水线项目的代码组织方式。用于新建或重构 bash/shell 主控加 Python/R/C++ 模块的分析流程、审查项目结构是否合规、或把单文件脚本改造成总控脚本加独立模块脚本模式。要求统一目录为 conf、pipe、script、python、src，禁止在单个文件内混写多种语言，禁止在模块中硬编码绝对路径和运行参数，要求总控脚本从 conf/Config.yaml 读取配置并通过命名 CLI 参数向模块传递。模板默认使用可由 shell `source` 加载的简单 YAML 子集，不依赖第三方 Python 包。仅适用于科研/分析流水线；不要用于普通单文件小工具、Web 前端、通用库开发或 Notebook 探索分析。
 ---
 
 # Pipeline Coding Standard
@@ -18,7 +18,7 @@ description: 规范科研和数据处理流水线项目的代码组织方式。�
 ```text
 主目录/
 - conf/
-  - Config.json
+  - Config.yaml
 - pipe/
 - script/
 - python/
@@ -33,7 +33,7 @@ description: 规范科研和数据处理流水线项目的代码组织方式。�
 - `python/`：只放 Python 模块。
 - `output/`：统一输出目录。
 - `src/`：放 R、C++ 或其他非 Python 模块。
-- `conf/`：统一配置入口，固定使用 `conf/Config.json`。
+- `conf/`：统一配置入口，固定使用 `conf/Config.yaml`。
 
 ### 2. 单文件单语言
 
@@ -48,7 +48,7 @@ description: 规范科研和数据处理流水线项目的代码组织方式。�
 
 ### 3. 参数与配置
 
-总控脚本必须从 `conf/Config.json` 读取配置，再通过命名 CLI 参数把参数传给模块。默认参数风格如下：
+总控脚本必须从 `conf/Config.yaml` 读取配置，再通过命名 CLI 参数把参数传给模块。模板默认使用简单 YAML 子集，并通过 `source script/load_config.sh conf/Config.yaml` 把配置加载为 shell 变量。默认参数风格如下：
 
 ```bash
 python3 python/example_step.py \
@@ -58,7 +58,16 @@ python3 python/example_step.py \
   --jobs "$JOBS"
 ```
 
-模块不得自行读取 `conf/Config.json` 作为默认工作方式，除非该模块被明确设计为配置解析器。业务模块必须从总控接收参数，不得依赖全局变量、环境变量或隐式工作目录状态。
+模块不得自行读取 `conf/Config.yaml` 作为默认工作方式，除非该模块被明确设计为配置解析器。业务模块必须从总控接收参数，不得依赖全局变量、环境变量或隐式工作目录状态。
+
+模板内置的 shell 加载器只支持以下 YAML 范围：
+
+- 顶层 section 加二级 key 的嵌套映射
+- 标量值，例如字符串、数字、布尔占位值
+- 两空格缩进
+- 行尾注释
+
+如果配置复杂到需要列表、多行字符串、锚点或更深层级，应改用更明确的配置方案，不要假装 shell 解析了完整 YAML。
 
 ### 4. 禁止硬编码
 
@@ -81,14 +90,14 @@ python3 python/example_step.py \
 ### 新建项目时
 
 1. 先使用 `scripts/init_pipeline_layout.sh <target_dir>` 复制模板项目。
-2. 再根据任务替换 `conf/Config.json` 示例字段。
+2. 再根据任务替换 `conf/Config.yaml` 示例字段。
 3. 在 `python/` 或 `src/` 中补充模块。
 4. 只在 `pipe/` 中组织流程，不把算法实现写入主控脚本。
 
 ### 重构旧脚本时
 
 1. 先识别当前脚本中的配置、流程控制、业务算法。
-2. 把配置迁移到 `conf/Config.json`。
+2. 把配置迁移到 `conf/Config.yaml`。
 3. 把流程控制迁移到 `pipe/`。
 4. 把业务逻辑拆分到 `python/` 或 `src/`。
 5. 删除跨语言混写和模块硬编码。
@@ -103,8 +112,8 @@ python3 python/example_step.py \
 
 但本 skill 要求把脚本头部集中硬编码变量升级为：
 
-- `conf/Config.json` 统一配置
-- 总控脚本读取配置
+- `conf/Config.yaml` 统一配置
+- 总控脚本通过 shell 加载器读取配置
 - 通过命名 CLI 参数调用模块
 
 ## 附带资源

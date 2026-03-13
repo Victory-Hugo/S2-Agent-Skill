@@ -1,0 +1,12 @@
+# This template supports a simple YAML subset for shell loading:
+# two-space indentation, nested mappings, scalar values, and optional comments.
+paths:
+  input_dir: "data/input"
+  output_dir: "result/example_run"
+  reference: "data/reference/reference.fa"
+
+runtime:
+  jobs: 4
+
+tools:
+  python: "python3"

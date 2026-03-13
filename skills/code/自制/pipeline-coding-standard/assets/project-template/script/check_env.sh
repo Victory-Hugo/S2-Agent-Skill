@@ -10,6 +10,7 @@ require_cmd() {
 }
 
 require_cmd bash
+require_cmd awk
 require_cmd python3
 
 echo "[OK] Environment check passed."

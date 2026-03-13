@@ -3,8 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 PROJECT_ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
-CONFIG_PATH="$PROJECT_ROOT/conf/Config.json"
-BOOTSTRAP_PYTHON="python3"
+CONFIG_PATH="$PROJECT_ROOT/conf/Config.yaml"
 
 if [[ ! -f "$CONFIG_PATH" ]]; then
     echo "[ERROR] Config file not found: $CONFIG_PATH" >&2
@@ -13,12 +12,27 @@ fi
 
 bash "$PROJECT_ROOT/script/check_env.sh"
 
-CONFIG_LOADER="$PROJECT_ROOT/python/config_loader.py"
-PYTHON_BIN=$("$BOOTSTRAP_PYTHON" "$CONFIG_LOADER" --config "$CONFIG_PATH" --key tools.python)
-INPUT_DIR=$("$BOOTSTRAP_PYTHON" "$CONFIG_LOADER" --config "$CONFIG_PATH" --key paths.input_dir)
-OUTPUT_DIR=$("$BOOTSTRAP_PYTHON" "$CONFIG_LOADER" --config "$CONFIG_PATH" --key paths.output_dir)
-REFERENCE=$("$BOOTSTRAP_PYTHON" "$CONFIG_LOADER" --config "$CONFIG_PATH" --key paths.reference)
-JOBS=$("$BOOTSTRAP_PYTHON" "$CONFIG_LOADER" --config "$CONFIG_PATH" --key runtime.jobs)
+source "$PROJECT_ROOT/script/load_config.sh" "$CONFIG_PATH"
+
+require_var() {
+    local var_name="$1"
+    if [[ -z "${!var_name:-}" ]]; then
+        echo "[ERROR] Missing required config value: $var_name" >&2
+        exit 1
+    fi
+}
+
+require_var CFG_TOOLS_PYTHON
+require_var CFG_PATHS_INPUT_DIR
+require_var CFG_PATHS_OUTPUT_DIR
+require_var CFG_PATHS_REFERENCE
+require_var CFG_RUNTIME_JOBS
+
+PYTHON_BIN="$CFG_TOOLS_PYTHON"
+INPUT_DIR="$CFG_PATHS_INPUT_DIR"
+OUTPUT_DIR="$CFG_PATHS_OUTPUT_DIR"
+REFERENCE="$CFG_PATHS_REFERENCE"
+JOBS="$CFG_RUNTIME_JOBS"
 
 mkdir -p "$PROJECT_ROOT/$OUTPUT_DIR"
 

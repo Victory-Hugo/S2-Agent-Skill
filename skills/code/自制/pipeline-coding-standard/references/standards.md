@@ -4,7 +4,7 @@
 
 | 目录 | 职责 | 允许内容 | 禁止内容 |
 | --- | --- | --- | --- |
-| `conf/` | 统一配置入口 | `Config.json` | 分散的业务配置 |
+| `conf/` | 统一配置入口 | `Config.yaml` | 分散的业务配置 |
 | `pipe/` | 总控脚本 | 流程编排、建目录、依赖检查、模块调用 | 业务算法实现 |
 | `script/` | 辅助脚本 | 环境检查、轻量包装脚本 | Python/R/C++ 业务逻辑 |
 | `python/` | Python 模块 | `.py` 脚本或模块 | 其他语言 |
@@ -14,7 +14,7 @@
 
 总控脚本负责以下工作：
 
-1. 定位项目根目录和 `conf/Config.json`
+1. 定位项目根目录和 `conf/Config.yaml`
 2. 检查依赖是否存在
 3. 创建输出目录
 4. 解析配置
@@ -48,7 +48,14 @@ python3 python/example_step.py \
 
 ### 配置集中管理
 
-所有路径、阈值、线程数都来自 `conf/Config.json`，或由总控脚本在命令行中明确传递。
+所有路径、阈值、线程数都来自 `conf/Config.yaml`，或由总控脚本在命令行中明确传递。模板默认使用可 `source` 的 shell 加载器解析简单 YAML 子集，不依赖第三方 Python 包。
+
+支持范围仅限：
+
+- 顶层 section 加二级 key 的嵌套映射
+- 标量值
+- 两空格缩进
+- 行尾注释
 
 ## 反例
 
@@ -94,7 +101,7 @@ parser.add_argument("--output", required=True)
 ## 推荐重构流程
 
 1. 识别现有脚本中的路径、阈值、线程数和工具位置
-2. 把这些配置迁移到 `conf/Config.json`
+2. 把这些配置迁移到 `conf/Config.yaml`
 3. 把流程控制保留在 `pipe/`
 4. 把每一步业务逻辑迁移到 `python/` 或 `src/`
 5. 用命名 CLI 参数替代模块内常量
@@ -106,10 +113,10 @@ parser.add_argument("--output", required=True)
 
 ```text
 project-template/
-- conf/Config.json
+- conf/Config.yaml
 - pipe/run_pipeline.sh
 - script/check_env.sh
-- python/config_loader.py
+- script/load_config.sh
 - python/example_step.py
 - src/.keep
 ```
