@@ -1,6 +1,6 @@
 ---
 name: pipeline-coding-standard
-description: 规范科研和数据处理流水线项目的代码组织方式。用于新建或重构 bash/shell 主控加 Python/R/C++ 模块的分析流程、审查项目结构是否合规、或把单文件脚本改造成总控脚本加独立模块脚本模式。要求统一目录为 conf、pipe、script、python、src，禁止在单个文件内混写多种语言，禁止在模块中硬编码绝对路径和运行参数，要求总控脚本从 conf/Config.yaml 读取配置并通过命名 CLI 参数向模块传递。模板默认使用可由 shell `source` 加载的简单 YAML 子集，不依赖第三方 Python 包。仅适用于科研/分析流水线；不要用于普通单文件小工具、Web 前端、通用库开发或 Notebook 探索分析。
+description: 规范科研和数据处理流水线项目的代码组织方式。用于新建或重构 bash/shell 主控加 Python/R/C++ 模块的分析流程、审查项目结构是否合规、或把单文件脚本改造成总控脚本加独立模块脚本模式。要求统一目录为 conf、pipe、script、python、src，禁止在单个文件内混写多种语言，禁止在模块中硬编码绝对路径和运行参数，要求总控脚本从 conf/Config.yaml 读取配置并通过命名 CLI 参数向模块传递；所有软件路径都必须集中写入 YAML，包括 conda 可执行文件路径、conda 环境名或环境前缀以及各类工具路径，禁止在 shell 中硬编码这些路径。模板默认使用可由 shell `source` 加载的简单 YAML 子集，不依赖第三方 Python 包。仅适用于科研/分析流水线；不要用于普通单文件小工具、Web 前端、通用库开发或 Notebook 探索分析。
 ---
 
 # Pipeline Coding Standard
@@ -48,7 +48,7 @@ description: 规范科研和数据处理流水线项目的代码组织方式。�
 
 ### 3. 参数与配置
 
-总控脚本必须从 `conf/Config.yaml` 读取配置，再通过命名 CLI 参数把参数传给模块。模板默认使用简单 YAML 子集，并通过 `source script/load_config.sh conf/Config.yaml` 把配置加载为 shell 变量。默认参数风格如下：
+总控脚本必须从 `conf/Config.yaml` 读取配置，再通过命名 CLI 参数把参数传给模块。模板默认使用简单 YAML 子集，并通过 `source script/load_config.sh conf/Config.yaml` 把配置加载为 shell 变量。所有软件相关设置也必须进入 YAML，包括但不限于 `python3`、`Rscript`、第三方二进制、`conda` 可执行文件路径、`conda` 环境名、`conda` 环境前缀。shell 只负责读取这些变量并执行，不允许在脚本里再写死软件安装位置或环境位置。默认参数风格如下：
 
 ```bash
 python3 python/example_step.py \
@@ -59,6 +59,25 @@ python3 python/example_step.py \
 ```
 
 模块不得自行读取 `conf/Config.yaml` 作为默认工作方式，除非该模块被明确设计为配置解析器。业务模块必须从总控接收参数，不得依赖全局变量、环境变量或隐式工作目录状态。
+
+涉及环境切换时，推荐也按同一原则写成配置驱动，例如：
+
+```bash
+"$CONDA_BIN" run -p "$ALIGN_ENV_PREFIX" python "$PYTHON_STEP" \
+  --input "$INPUT_DIR" \
+  --output "$OUTPUT_FILE"
+```
+
+或：
+
+```bash
+"$CONDA_BIN" run -n "$ALIGN_ENV_NAME" "$SAMTOOLS_BIN" sort \
+  -@ "$JOBS" \
+  -o "$OUTPUT_BAM" \
+  "$INPUT_BAM"
+```
+
+这里的 `CONDA_BIN`、`ALIGN_ENV_PREFIX`、`ALIGN_ENV_NAME`、`SAMTOOLS_BIN` 都必须来自 `conf/Config.yaml`，不能在 shell 中写成固定绝对路径。
 
 模板内置的 shell 加载器只支持以下 YAML 范围：
 
@@ -76,8 +95,18 @@ python3 python/example_step.py \
 - 绝对路径，例如 `/mnt/...`、`C:\...`
 - 输入输出文件路径
 - 参考文件路径
+- 软件可执行文件路径
+- conda 可执行文件路径
+- conda 环境名或环境前缀
 - 线程数、阈值等运行参数
 - 假定外部目录结构的常量
+
+禁止在 shell 总控或辅助脚本中硬编码以下内容：
+
+- `python`、`python3`、`Rscript`、`perl`、`java`、`samtools`、`bwa`、`blastn` 等软件路径
+- `conda`、`mamba`、`micromamba` 的安装路径
+- 环境激活脚本路径
+- 具体环境目录，例如 `/path/to/miniconda3/envs/xxx`
 
 允许硬编码的内容仅限：
 
