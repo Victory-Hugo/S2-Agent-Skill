@@ -1,0 +1,4 @@
+interface:
+  display_name: "管线任务拆分"
+  short_description: "将已有粗粒度管线拆分为多个细粒度单核 HPC 子任务。"
+  default_prompt: "使用 $pipeline-job-splitting 将这个已有管线重构为细粒度 HPC 提交流程，按任务列表切分并生成 per-task 配置和单核 LSF 包装脚本。"
