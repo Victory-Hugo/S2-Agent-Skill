@@ -10,9 +10,8 @@ if [[ ! -f "$CONFIG_PATH" ]]; then
     exit 1
 fi
 
-bash "$PROJECT_ROOT/script/check_env.sh"
-
 source "$PROJECT_ROOT/script/load_config.sh" "$CONFIG_PATH"
+bash "$PROJECT_ROOT/script/check_env.sh" "$CONFIG_PATH"
 
 require_var() {
     local var_name="$1"
@@ -22,24 +21,47 @@ require_var() {
     fi
 }
 
-require_var CFG_TOOLS_PYTHON
-require_var CFG_PATHS_INPUT_DIR
+resolve_path() {
+    local raw_path="$1"
+    if [[ "$raw_path" = /* ]]; then
+        printf '%s\n' "$raw_path"
+    else
+        printf '%s\n' "$BASE_DIR/$raw_path"
+    fi
+}
+
+resolve_project_path() {
+    local raw_path="$1"
+    if [[ "$raw_path" = /* ]]; then
+        printf '%s\n' "$raw_path"
+    else
+        printf '%s\n' "$PROJECT_ROOT/$raw_path"
+    fi
+}
+
+require_var CFG_PROJECT_BASE_DIR
+require_var CFG_PROJECT_INPUT_TABLE
+require_var CFG_TOOLS_PYTHON_BIN
+require_var CFG_PATHS_PYTHON_DIR
 require_var CFG_PATHS_OUTPUT_DIR
 require_var CFG_PATHS_REFERENCE
 require_var CFG_RUNTIME_JOBS
 
-PYTHON_BIN="$CFG_TOOLS_PYTHON"
-INPUT_DIR="$CFG_PATHS_INPUT_DIR"
-OUTPUT_DIR="$CFG_PATHS_OUTPUT_DIR"
-REFERENCE="$CFG_PATHS_REFERENCE"
+BASE_DIR=$(resolve_project_path "$CFG_PROJECT_BASE_DIR")
+PYTHON_BIN=$(resolve_path "$CFG_TOOLS_PYTHON_BIN")
+PYTHON_DIR=$(resolve_path "$CFG_PATHS_PYTHON_DIR")
+INPUT_TABLE=$(resolve_path "$CFG_PROJECT_INPUT_TABLE")
+OUTPUT_DIR=$(resolve_path "$CFG_PATHS_OUTPUT_DIR")
+STEP1_OUTPUT_DIR=$(resolve_path "${CFG_PATHS_OUTPUT_STEP1_DATA:-$CFG_PATHS_OUTPUT_DIR}")
+REFERENCE=$(resolve_path "$CFG_PATHS_REFERENCE")
 JOBS="$CFG_RUNTIME_JOBS"
 
-mkdir -p "$PROJECT_ROOT/$OUTPUT_DIR"
+mkdir -p "$OUTPUT_DIR" "$STEP1_OUTPUT_DIR"
 
-"$PYTHON_BIN" "$PROJECT_ROOT/python/example_step.py" \
-    --input "$PROJECT_ROOT/$INPUT_DIR" \
-    --output "$PROJECT_ROOT/$OUTPUT_DIR/step-summary.txt" \
-    --ref "$PROJECT_ROOT/$REFERENCE" \
+"$PYTHON_BIN" "$PYTHON_DIR/example_step.py" \
+    --input "$INPUT_TABLE" \
+    --output "$STEP1_OUTPUT_DIR/step-summary.txt" \
+    --ref "$REFERENCE" \
     --jobs "$JOBS"
 
 echo "[OK] Pipeline finished."

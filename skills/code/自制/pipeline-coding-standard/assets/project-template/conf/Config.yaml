@@ -1,12 +1,39 @@
-# This template supports a simple YAML subset for shell loading:
-# two-space indentation, nested mappings, scalar values, and optional comments.
+# =====================================================================
+# Pipeline Project - Configuration Template
+# All paths support absolute paths or paths relative to project.base_dir
+# =====================================================================
+
+project:
+  base_dir: "."                              # Project root directory
+  input_table: "data/input/sample.tsv"       # Main input table or metadata file
+
+# --------------------------------------------------------------------- #
+# Directory layout: relative paths are resolved from project.base_dir    #
+# --------------------------------------------------------------------- #
 paths:
-  input_dir: "data/input"
-  output_dir: "result/example_run"
-  reference: "data/reference/reference.fa"
+  python_dir: "python"                       # Python module directory
+  src_dir: "src"                             # R/C++/other module directory
+  helper_dir: "script"                       # Shell helper script directory
+  data_dir: "data"                           # Raw data and resource directory
+  tmp_dir: "tmp"                             # Temporary directory
+  log_dir: "log"                             # Log directory
+  output_dir: "output"                       # Output root directory
+  output_step1_data: "output/1/data"         # Step 1 output directory
+  output_step2_data: "output/2/data"         # Step 2 output directory
+  reference: "data/reference/reference.fa"   # Example reference file
 
-runtime:
-  jobs: 4
-
+# --------------------------------------------------------------------- #
+# Tool locations: keep interpreters, binaries, and envs here            #
+# --------------------------------------------------------------------- #
 tools:
-  python: "python3"
+  conda_bin: "/path/to/conda"                # Conda executable path
+  python_bin: "/usr/bin/python3"             # Python interpreter path
+  python_env_prefix: "/path/to/conda-env"    # Conda environment prefix
+  rscript_bin: "/usr/bin/Rscript"            # Rscript path
+
+# --------------------------------------------------------------------- #
+# Runtime options: threads, thresholds, feature flags                   #
+# --------------------------------------------------------------------- #
+runtime:
+  jobs: 4                                    # Number of parallel threads
+  overwrite: false                           # Whether to overwrite outputs

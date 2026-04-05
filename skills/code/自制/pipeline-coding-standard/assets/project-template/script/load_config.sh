@@ -33,6 +33,36 @@ mapfile -t _config_exports < <(
         return value
     }
 
+    function strip_comment(value,   i, ch, in_single, in_double, result) {
+        in_single = 0
+        in_double = 0
+        result = ""
+
+        for (i = 1; i <= length(value); i++) {
+            ch = substr(value, i, 1)
+
+            if (ch == "\"" && in_single == 0) {
+                in_double = !in_double
+                result = result ch
+                continue
+            }
+
+            if (ch == "'"'"'" && in_double == 0) {
+                in_single = !in_single
+                result = result ch
+                continue
+            }
+
+            if (ch == "#" && in_single == 0 && in_double == 0) {
+                break
+            }
+
+            result = result ch
+        }
+
+        return trim(result)
+    }
+
     function shq(value) {
         gsub(/\047/, "'\''\"'\''\"'\''", value)
         return "'"'"'" value "'"'"'"
@@ -54,12 +84,7 @@ mapfile -t _config_exports < <(
         }
 
         key = groups[1]
-        value = trim(groups[2])
-
-        if (value ~ /^[^"'\'']+[[:space:]]+#/) {
-            sub(/[[:space:]]+#.*/, "", value)
-            value = trim(value)
-        }
+        value = strip_comment(trim(groups[2]))
 
         value = unquote(value)
         var_name = toupper(section "_" key)

@@ -1,6 +1,6 @@
 ---
 name: pipeline-coding-standard
-description: 规范科研和数据处理流水线项目的代码组织方式。用于新建或重构 bash/shell 主控加 Python/R/C++ 模块的分析流程、审查项目结构是否合规、或把单文件脚本改造成总控脚本加独立模块脚本模式。要求统一目录为 conf、pipe、script、python、src，禁止在单个文件内混写多种语言，禁止在模块中硬编码绝对路径和运行参数，要求总控脚本从 conf/Config.yaml 读取配置并通过命名 CLI 参数向模块传递；所有软件路径都必须集中写入 YAML，包括 conda 可执行文件路径、conda 环境名或环境前缀以及各类工具路径，禁止在 shell 中硬编码这些路径。模板默认使用可由 shell `source` 加载的简单 YAML 子集，不依赖第三方 Python 包。仅适用于科研/分析流水线；不要用于普通单文件小工具、Web 前端、通用库开发或 Notebook 探索分析。
+description: 编写或者修改代码至符合规范科研和数据处理的流水线(pipeline)。仅适用于科研、分析pipeline；不要用于普通单文件小工具、Web 前端、通用库开发或 Notebook 探索分析。
 ---
 
 # Pipeline Coding Standard
@@ -48,7 +48,62 @@ description: 规范科研和数据处理流水线项目的代码组织方式。�
 
 ### 3. 参数与配置
 
-总控脚本必须从 `conf/Config.yaml` 读取配置，再通过命名 CLI 参数把参数传给模块。模板默认使用简单 YAML 子集，并通过 `source script/load_config.sh conf/Config.yaml` 把配置加载为 shell 变量。所有软件相关设置也必须进入 YAML，包括但不限于 `python3`、`Rscript`、第三方二进制、`conda` 可执行文件路径、`conda` 环境名、`conda` 环境前缀。shell 只负责读取这些变量并执行，不允许在脚本里再写死软件安装位置或环境位置。默认参数风格如下：
+总控脚本必须从 `conf/Config.yaml` 读取配置，再通过命名 CLI 参数把参数传给模块。模板默认使用简单 YAML 子集，并通过 `source script/load_config.sh conf/Config.yaml` 把配置加载为 shell 变量。所有软件相关设置也必须进入 YAML，包括但不限于 `python3`、`Rscript`、第三方二进制、`conda` 可执行文件路径、`conda` 环境名、`conda` 环境前缀。shell 只负责读取这些变量并执行，不允许在脚本里再写死软件安装位置或环境位置。
+
+编写 `conf/Config.yaml` 时必须满足以下格式要求：
+
+- 必须添加块级注释和关键字段行尾注释，说明 section 用途与字段含义。
+- 必须按职责分层，优先拆成 `project`、`paths`、`tools`、`runtime` 这类 section；有步骤专属输出时，再在 `paths` 下继续分组命名。
+- 路径字段必须清楚区分“项目根目录”“输入文件”“通用目录”“步骤输出目录”，不要把所有路径堆在一个 section。
+- 工具字段必须集中放入 `tools`，避免把解释器、二进制、环境前缀散落到其他 section。
+- 运行参数例如线程数、阈值、批次大小、是否跳步等，必须集中放入 `runtime` 或其他语义明确的参数 section。
+- 默认优先使用相对于 `project.base_dir` 的相对路径；如果必须使用绝对路径，也要在注释中明确其角色。
+
+推荐模板风格如下，保留这种“标题注释 + section 注释 + 行尾注释”的层次，不要照搬具体字段名到不相关项目：
+
+```yaml
+# =====================================================================
+# <流程名称> — 配置文件
+# 所有路径均支持：绝对路径 / 相对路径（相对于 base_dir）
+# =====================================================================
+
+project:
+  base_dir: "/abs/path/to/project"      # 项目根目录
+  input_table: "data/input/sample.tsv"  # 主输入文件或主元数据表
+
+# --------------------------------------------------------------------- #
+# 目录结构：相对路径默认相对于 project.base_dir                         #
+# --------------------------------------------------------------------- #
+paths:
+  python_dir: "python"             # Python 模块目录
+  src_dir: "src"                   # R/C++/其他模块目录
+  helper_dir: "script"             # shell 辅助脚本目录
+  data_dir: "data"                 # 原始数据与资源目录
+  tmp_dir: "tmp"                   # 临时目录
+  log_dir: "log"                   # 日志目录
+  output_dir: "output"             # 输出根目录
+  output_step1_data: "output/1/data"  # 步骤 1 输出目录
+  output_step2_data: "output/2/data"  # 步骤 2 输出目录
+
+# --------------------------------------------------------------------- #
+# 工具路径：集中管理解释器、二进制和环境                                 #
+# --------------------------------------------------------------------- #
+tools:
+  conda_bin: "/path/to/conda"          # conda 可执行文件
+  python_bin: "/path/to/python3"       # Python 解释器
+  python_env_prefix: "/path/to/env"    # conda 环境前缀
+  rscript_bin: "/usr/bin/Rscript"      # Rscript 路径
+
+# --------------------------------------------------------------------- #
+# 运行参数：统一放线程数、阈值、开关等                                   #
+# --------------------------------------------------------------------- #
+runtime:
+  jobs: 8                  # 并行线程数
+  min_depth: 10            # 示例阈值参数
+  overwrite: false         # 是否覆盖已有输出
+```
+
+默认参数风格如下：
 
 ```bash
 python3 python/example_step.py \
@@ -85,6 +140,8 @@ python3 python/example_step.py \
 - 标量值，例如字符串、数字、布尔占位值
 - 两空格缩进
 - 行尾注释
+
+因此，推荐保持在“section -> key”或“section -> 分组命名 key”的简单层次，不要写需要数组解析的结构。
 
 如果配置复杂到需要列表、多行字符串、锚点或更深层级，应改用更明确的配置方案，不要假装 shell 解析了完整 YAML。
 

@@ -57,6 +57,13 @@ python3 python/example_step.py \
 - 两空格缩进
 - 行尾注释
 
+推荐按职责拆成以下 section：
+
+- `project`：项目根目录、主输入表等项目级入口
+- `paths`：目录路径、步骤输出目录、参考文件
+- `tools`：解释器、第三方二进制、conda 相关路径
+- `runtime`：线程数、阈值、开关类参数
+
 ## 反例
 
 ### 反例 1：在 bash 中嵌入 Python heredoc
