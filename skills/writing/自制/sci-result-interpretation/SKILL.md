@@ -10,7 +10,7 @@ description: 面向科研写作的结果解读技能。根据用户提供的图�
 
 1. 产出详细 `Methods and Materials`。
 2. 逐项解读 `Results`，并给出证据边界内的 `Discussion`。
-3. 输出中英镜像内容与结构化检查文件。
+3. 输出中英镜像内容、结构化检查文件以及正文所需的 `Figure/` 与 `Table/` 证据产物。
 
 ## When To Use
 
@@ -46,6 +46,8 @@ description: 面向科研写作的结果解读技能。根据用户提供的图�
    分析专用技能文档路径，如 PCA/生存分析等。
 7. `target_style` (optional)
    默认 `SCI`；用户显式指定时覆盖表达层风格规则。
+8. `artifact_numbering_optional` (optional)
+   已固定的 `Table/Figure` 编号方案；未指定时按首次正文引用顺序编号。
 
 ## Non-Negotiable Defaults
 
@@ -54,14 +56,17 @@ description: 面向科研写作的结果解读技能。根据用户提供的图�
 3. 默认深度为详细解读：结果现象、统计证据、机制解释、局限性都要覆盖。
 4. 不得编造数据、流程、参数或引用。
 5. 仅使用用户提供文献；缺失时标注 `[Citation Needed: ...]`。
+6. 关键定量结论后默认使用正文短引文 `(Table X; Fig. Y)`，且对应产物必须已交付。
 
 ## Execution Order
 
 1. 读取 `guidance`、`background`、`paths`。
 2. 读取 `results` 并建立 `Result ID` 索引。
-3. 若存在 `analysis_skill_docs`，建立分析技能映射并注入必需要素。
-4. 先写 `Methods and Materials`，再按 `Result ID` 写 `Results`，最后写 `Discussion`。
-5. 执行完整性检查与风格检查；失败则回补并复检。
+3. 为关键定量结论建立 `Evidence Artifact Plan`。
+4. 若存在 `analysis_skill_docs`，建立分析技能映射并注入必需要素。
+5. 先生成或整理 `Figure/` 与 `Table/` 产物，再写 `Methods and Materials`、`Results` 和 `Discussion`。
+6. 在 `Results` 与 `Discussion` 的关键定量结论后插入 `(Table X; Fig. Y)` 证据回指。
+7. 执行完整性检查、证据覆盖检查与风格检查；失败则回补并复检。
 
 ## Build Result Inventory First
 
@@ -76,6 +81,20 @@ description: 面向科研写作的结果解读技能。根据用户提供的图�
 1. 每个可识别结果对象单独占一行。
 2. `Coverage` 初始为 `Missing`，双语解读完成后改为 `Complete`。
 3. 未进入索引的结果视为漏项，不允许结束任务。
+
+## Build Evidence Artifact Plan
+
+在写正文前，建立结果对象到交付产物的映射。
+
+| Result ID | Claim Focus | Artifact Type | Source Input | Output File | Citation Form | Status | Notes |
+|---|---|---|---|---|---|---|---|
+| R01 | NUMT count and prevalence | Table | cohort_summary.tsv | Table/Table1.tsv | Table 1 | Available/Needs Build/Blocked | ... |
+
+规则：
+
+1. 每个 `Result ID` 至少映射一个 `Table` 或 `Figure`；必要时可同时映射多个产物。
+2. `Citation Form` 在正文中统一使用 `(Table X)`、`(Fig. Y)` 或 `(Table X; Fig. Y)`。
+3. `Blocked` 项必须进入 `Missing/Blocked Items`，且不得让相关关键结论通过最终检查。
 
 ## Fuse Analysis-Specific Skills
 
@@ -120,7 +139,7 @@ description: 面向科研写作的结果解读技能。根据用户提供的图�
 4. 领域解释：在证据支持范围内给出机制或生物学含义。
 5. 局限说明：偏倚来源、样本限制、方法边界。
 
-完成中文后生成英文镜像段落。
+完成中文后生成英文镜像段落。凡出现关键数字性结论，必须在句内或句末插入短格式证据回指。
 
 ## Write Discussion
 
@@ -155,6 +174,7 @@ description: 面向科研写作的结果解读技能。根据用户提供的图�
 3. 禁止编造数据、流程、引用。
 4. 中英文术语与变量命名一致。
 5. 缺失信息必须显式声明。
+6. 关键数字性结论必须与已交付的 `Figure` 或 `Table` 文件一一对应。
 
 ## Completeness Gate (Hard Stop)
 
@@ -164,15 +184,16 @@ description: 面向科研写作的结果解读技能。根据用户提供的图�
 2. 内容要素全覆盖：每条结果均含现象、证据、解释、局限。
 3. 章节全覆盖：`Methods and Materials`、`Results`、`Discussion` 全部齐全且双语齐全。
 4. 融合检查：匹配到分析技能的结果均已应用专用要求。
+5. 证据覆盖检查：所有关键数字性结论都已链接到实际交付的 `Figure` 或 `Table`。
 
 失败时必须列缺失项、补写、复检。
 
 
 ## Final Delivery Format (Markdown)
 
-固定输出两个文件：
+固定输出以下交付物：
 
-### `结果解读.md`
+### `示例/结果解读.md`
 
 1. `方法与材料 (中文)`
 2. `Methods and Materials (EN)`
@@ -181,12 +202,26 @@ description: 面向科研写作的结果解读技能。根据用户提供的图�
 5. `讨论 (中文)`
 6. `Discussion (EN)`
 
-### `结果解读-完整性检查.md`
+关键数字性结论后必须使用正文短引文，如 `(Table 1)`、`(Fig. 2)` 或 `(Table 1; Fig. 2)`。
+
+### `示例/结果解读-完整性检查.md`
 
 1. `Skill Fusion Log`
 2. `Style Validation Report`
 3. `Completeness Checklist`
 4. `Missing/Blocked Items`（无则写 `None`）
+5. `Evidence Artifact Plan`
+6. `Artifact Manifest`
+
+### `示例/Table/`
+
+1. 每个被正文引用的表格必须以 `TableN.tsv` 形式交付。
+2. 文件名编号与正文引文中的 `Table N` 完全一致。
+
+### `示例/Figure/`
+
+1. 每个被正文引用的图件必须以 `FigureN.png` 形式交付。
+2. 正文引用统一写作 `Fig. N`。
 
 ## Structured Validation Artifacts
 
@@ -206,3 +241,4 @@ description: 面向科研写作的结果解读技能。根据用户提供的图�
 
 1. `Completeness Checklist` 全部 `Pass`。
 2. `Missing/Blocked Items` 全部 `Resolved` 或为 `None`。
+3. `Artifact Manifest` 中所有正文引用的 `Table/Figure` 文件均已存在且编号一致。
