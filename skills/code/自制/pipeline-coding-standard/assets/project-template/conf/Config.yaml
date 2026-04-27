@@ -15,11 +15,13 @@ paths:
   src_dir: "src"                             # R/C++/other module directory
   helper_dir: "script"                       # Shell helper script directory
   data_dir: "data"                           # Raw data and resource directory
-  tmp_dir: "tmp"                             # Temporary directory
+  temp_dir: "temp"                           # Temporary root directory
   log_dir: "log"                             # Log directory
   output_dir: "output"                       # Output root directory
-  output_step1_data: "output/1/data"         # Step 1 output directory
-  output_step2_data: "output/2/data"         # Step 2 output directory
+  output_step1_table: "output/1-data_preprocessing/1-table"      # Step 1 table output
+  output_step1_figure: "output/1-data_preprocessing/2-figure"    # Step 1 figure output
+  output_step1_report: "output/1-data_preprocessing/3-report"    # Step 1 report output
+  temp_step1: "temp/1-data_preprocessing"                        # Step 1 temporary directory
   reference: "data/reference/reference.fa"   # Example reference file
 
 # --------------------------------------------------------------------- #

@@ -44,6 +44,10 @@ require_var CFG_PROJECT_INPUT_TABLE
 require_var CFG_TOOLS_PYTHON_BIN
 require_var CFG_PATHS_PYTHON_DIR
 require_var CFG_PATHS_OUTPUT_DIR
+require_var CFG_PATHS_OUTPUT_STEP1_TABLE
+require_var CFG_PATHS_OUTPUT_STEP1_FIGURE
+require_var CFG_PATHS_OUTPUT_STEP1_REPORT
+require_var CFG_PATHS_TEMP_STEP1
 require_var CFG_PATHS_REFERENCE
 require_var CFG_RUNTIME_JOBS
 
@@ -52,15 +56,18 @@ PYTHON_BIN=$(resolve_path "$CFG_TOOLS_PYTHON_BIN")
 PYTHON_DIR=$(resolve_path "$CFG_PATHS_PYTHON_DIR")
 INPUT_TABLE=$(resolve_path "$CFG_PROJECT_INPUT_TABLE")
 OUTPUT_DIR=$(resolve_path "$CFG_PATHS_OUTPUT_DIR")
-STEP1_OUTPUT_DIR=$(resolve_path "${CFG_PATHS_OUTPUT_STEP1_DATA:-$CFG_PATHS_OUTPUT_DIR}")
+STEP1_TABLE_DIR=$(resolve_path "$CFG_PATHS_OUTPUT_STEP1_TABLE")
+STEP1_FIGURE_DIR=$(resolve_path "$CFG_PATHS_OUTPUT_STEP1_FIGURE")
+STEP1_REPORT_DIR=$(resolve_path "$CFG_PATHS_OUTPUT_STEP1_REPORT")
+STEP1_TEMP_DIR=$(resolve_path "$CFG_PATHS_TEMP_STEP1")
 REFERENCE=$(resolve_path "$CFG_PATHS_REFERENCE")
 JOBS="$CFG_RUNTIME_JOBS"
 
-mkdir -p "$OUTPUT_DIR" "$STEP1_OUTPUT_DIR"
+mkdir -p "$OUTPUT_DIR" "$STEP1_TABLE_DIR" "$STEP1_FIGURE_DIR" "$STEP1_REPORT_DIR" "$STEP1_TEMP_DIR"
 
-"$PYTHON_BIN" "$PYTHON_DIR/example_step.py" \
+"$PYTHON_BIN" "$PYTHON_DIR/1-1-data_preprocessing.py" \
     --input "$INPUT_TABLE" \
-    --output "$STEP1_OUTPUT_DIR/step-summary.txt" \
+    --output "$STEP1_TABLE_DIR/step-summary.txt" \
     --ref "$REFERENCE" \
     --jobs "$JOBS"
 

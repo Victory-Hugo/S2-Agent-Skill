@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 def build_parser():
-    parser = argparse.ArgumentParser(description="Example pipeline step.")
+    parser = argparse.ArgumentParser(description="Step 1-1 data preprocessing.")
     parser.add_argument("--input", required=True, help="Input directory")
     parser.add_argument("--output", required=True, help="Output file")
     parser.add_argument("--ref", required=True, help="Reference file path")

@@ -9,6 +9,62 @@
 | `script/` | 辅助脚本 | 环境检查、轻量包装脚本 | Python/R/C++ 业务逻辑 |
 | `python/` | Python 模块 | `.py` 脚本或模块 | 其他语言 |
 | `src/` | 非 Python 模块 | R、C++、其他语言模块 | Python 主模块 |
+| `output/` | 结果输出 | 按步骤和结果类型组织的结果文件 | 临时文件、无编号散乱输出 |
+| `temp/` | 临时文件 | 按步骤组织的中间文件和缓存 | 最终结果 |
+
+## 文件命名规范
+
+所有承载流程步骤或业务功能的代码文件必须使用数字前缀命名，编号顺序要与流水线执行顺序一致。
+
+推荐模式：
+
+```text
+pipe/<主步骤编号>-<module_or_function>.sh
+python/<主步骤编号>-<子步骤编号>-<module_or_function>.py
+src/<主步骤编号>-<子步骤编号>-<module_or_function>.<ext>
+```
+
+正例：
+
+```text
+pipe/1-data_preprocessing.sh
+python/1-1-data_preprocessing.py
+python/1-2-feature_engineering.py
+src/2-1-statistical_modeling.R
+```
+
+反例：
+
+```text
+pipe/run_pipeline.sh
+python/example_step.py
+python/main.py
+```
+
+`script/` 中的非业务辅助工具可以使用描述性名称，例如 `load_config.sh`、`check_env.sh`。如果辅助脚本承载具体业务步骤，也必须使用编号命名。
+
+## 输出目录规范
+
+每个主步骤的输出必须集中到独立步骤目录，并按结果类型拆分：
+
+```text
+output/
+- 1-data_preprocessing/
+  - 1-table/
+  - 2-figure/
+  - 3-report/
+temp/
+- 1-data_preprocessing/
+```
+
+目录职责：
+
+- `1-table/`：表格、矩阵、统计结果、下游可读数据。
+- `2-figure/`：图片、图表、可视化结果。
+- `3-report/`：报告、摘要、可读说明文档。
+- `temp/<步骤编号>-<步骤名>/`：中间文件、缓存和可删除临时产物。
+
+禁止使用 `output/1/data/`、`output/result/`、`output/tmp/` 这类含义不清或结果类型混杂的目录。
 
 ## 总控脚本职责边界
 
@@ -16,7 +72,7 @@
 
 1. 定位项目根目录和 `conf/Config.yaml`
 2. 检查依赖是否存在
-3. 创建输出目录
+3. 创建规范化输出目录和临时目录
 4. 解析配置
 5. 调用模块
 6. 汇总日志或状态
@@ -32,17 +88,17 @@
 ### 总控脚本调用模块
 
 ```bash
-python3 python/example_step.py \
+"$PYTHON_BIN" python/1-1-data_preprocessing.py \
   --input "$INPUT_DIR" \
-  --output "$OUTPUT_FILE" \
+  --output "$OUTPUT_TABLE" \
   --ref "$REFERENCE" \
   --jobs "$JOBS"
 ```
 
 这个模式符合要求，因为：
 
-- 流程控制位于 `pipe/run_pipeline.sh`
-- 模块逻辑位于 `python/example_step.py`
+- 流程控制位于 `pipe/1-data_preprocessing.sh`
+- 模块逻辑位于 `python/1-1-data_preprocessing.py`
 - 参数由总控显式下发
 - 路径和线程数来自配置
 
@@ -109,10 +165,12 @@ parser.add_argument("--output", required=True)
 
 1. 识别现有脚本中的路径、阈值、线程数和工具位置
 2. 把这些配置迁移到 `conf/Config.yaml`
-3. 把流程控制保留在 `pipe/`
-4. 把每一步业务逻辑迁移到 `python/` 或 `src/`
-5. 用命名 CLI 参数替代模块内常量
-6. 删除跨语言 here-doc 和其他混写模式
+3. 把流程控制保留在 `pipe/`，并按主步骤编号命名
+4. 把每一步业务逻辑迁移到 `python/` 或 `src/`，并按主步骤-子步骤编号命名
+5. 把输出重组到 `output/<步骤编号>-<步骤名>/{1-table,2-figure,3-report}/`
+6. 把临时文件重组到 `temp/<步骤编号>-<步骤名>/`
+7. 用命名 CLI 参数替代模块内常量
+8. 删除跨语言 here-doc 和其他混写模式
 
 ## 模板说明
 
@@ -121,10 +179,14 @@ parser.add_argument("--output", required=True)
 ```text
 project-template/
 - conf/Config.yaml
-- pipe/run_pipeline.sh
+- pipe/1-data_preprocessing.sh
 - script/check_env.sh
 - script/load_config.sh
-- python/example_step.py
+- python/1-1-data_preprocessing.py
+- output/1-data_preprocessing/1-table/
+- output/1-data_preprocessing/2-figure/
+- output/1-data_preprocessing/3-report/
+- temp/1-data_preprocessing/
 - src/.keep
 ```
 
