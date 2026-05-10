@@ -14,6 +14,8 @@ SOURCE_DIR="/mnt/f/onedrive/文档（科研）/脚本/Download/S2-Agent-Skill/sk
 TARGET_DIRS=(
     "/home/luolintao/.codex/skills/"
     "/home/luolintao/.claude/skills/"
+    "/home/luolintao/.claude-account-Biglin/skills/"
+    "/home/luolintao/.claude-account-Gianthui/skills/"
     "/home/luolintao/.copilot/skills/"
     "/home/luolintao/.cc-switch/skills/"
     # "/mnt/c/Users/Administrator/.codex/vendor_imports/skills"
