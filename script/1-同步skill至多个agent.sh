@@ -10,12 +10,12 @@
 SOURCE_DIR="/mnt/f/onedrive/文档（科研）/脚本/Download/S2-Agent-Skill/skills" #! 将此路径替换为你的 S2-Agent-Skill skills 目录路径
 
 #! codex的路径一般在 ~/.codex/skills/,若没有可以mkdir -p 创建
-#! claude的路径一般在 ~/.claude/skills/,若没有可以mkdir -p 创建
+#! claude 各账号的 skills/ 现在统一通过 ~/.claude-shared/skills/ 共享，
+#! 不再单独同步，避免数据冗余。各账号目录已通过软链接指向共享目录。
+#! 若要新增 claude 账号，请在 2-建立共享链接.sh 中添加，无需修改本脚本。
 TARGET_DIRS=(
     "/home/luolintao/.codex/skills/"
-    "/home/luolintao/.claude/skills/"
-    "/home/luolintao/.claude-account-Biglin/skills/"
-    "/home/luolintao/.claude-account-Gianthui/skills/"
+    "/home/luolintao/.claude-shared/skills/"
     "/home/luolintao/.copilot/skills/"
     "/home/luolintao/.cc-switch/skills/"
     # "/mnt/c/Users/Administrator/.codex/vendor_imports/skills"
