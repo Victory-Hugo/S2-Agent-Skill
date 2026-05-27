@@ -1,6 +1,6 @@
 ---
 name: pipeline-job-splitting
-description: 将已有的粗粒度科研、分析或生物信息学管线拆分为多个细粒度单核 HPC 子任务。用于 bash/shell 主控流程需要按样本列表、区域列表、染色体列表或其他任务清单切分，并为每个子任务生成独立配置文件和调度脚本的场景。适用于 LSF 优先的 HPC 提交重构、细粒度任务提交、粗粒度任务拆解为多个单核子任务、high-throughput submission、job splitting 或 scatter 风格改造。默认保留原有分析逻辑，只重构任务切分、配置派生与手动作业提交层。
+description: 将已有的粗粒度科研、分析或生物信息学管线拆分为多个细粒度单核 HPC 子任务。
 ---
 
 # Pipeline Job Splitting
