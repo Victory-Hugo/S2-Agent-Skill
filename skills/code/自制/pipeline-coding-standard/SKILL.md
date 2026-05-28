@@ -17,7 +17,8 @@ description: 编写或者修改代码至符合规范科研和数据处理的流�
   pipe/                  ← 总控脚本（每步骤一个 .sh）
   script/                ← shell 辅助工具
   python/                ← Python 模块
-  src/                   ← R、C++ 等其他语言模块
+  src/                   ← C++ 等其他语言模块
+  R/                     ← R 脚本
   output/                ← 按步骤组织的输出
   temp/                  ← 临时文件
   data/                  ← 原始数据
