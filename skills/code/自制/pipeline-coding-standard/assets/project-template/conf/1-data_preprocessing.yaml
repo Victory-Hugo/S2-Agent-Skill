@@ -1,0 +1,22 @@
+# 1-data_preprocessing — 配置文件
+# 每个 pipe 步骤对应一个独立的 conf YAML，编号和名称与 pipe/ 脚本保持一致
+
+project:
+  base_dir: "."                              # 项目根目录（相对或绝对路径）
+  input_table: "input/sample.tsv"            # 该步骤的主输入文件
+
+paths:
+  output_table:  "output/1-data_preprocessing/1-table"   # 表格输出目录
+  output_figure: "output/1-data_preprocessing/2-figure"  # 图片输出目录（图与 TSV 同名伴出）
+  output_report: "output/1-data_preprocessing/3-report"  # 报告输出目录
+  temp:          "temp/1-data_preprocessing"             # 临时目录
+
+tools:
+  conda_bin:         "/path/to/conda"        # conda 可执行文件
+  python_bin:        "/path/to/python3"      # Python 解释器
+  python_env_prefix: "/path/to/conda-env"   # conda 环境前缀
+  rscript_bin:       "/usr/bin/Rscript"      # Rscript 路径
+
+runtime:
+  jobs:      4      # 并行线程数
+  overwrite: false  # 是否覆盖已有输出

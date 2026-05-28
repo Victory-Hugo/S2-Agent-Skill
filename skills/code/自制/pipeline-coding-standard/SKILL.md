@@ -5,275 +5,133 @@ description: 编写或者修改代码至符合规范科研和数据处理的流�
 
 # Pipeline Coding Standard
 
-## 概述
-
-使用这个 skill 组织或重构科研/分析流水线项目。默认采用 1 个总控脚本加多个模块脚本的结构，强调目录职责清晰、配置集中、参数显式传递、模块无硬编码。
-
 ## 核心要求
 
-### 1. 项目组织
+### 1. 项目目录结构
 
-优先使用以下目录结构：
-
-```text
-主目录/
-- conf/
-  - Config.yaml
-- pipe/
-- script/
-- python/
-- output/
-- src/
-```
-
-目录职责固定如下：
-
-- `pipe/`：总控脚本。负责读取配置、检查依赖、建目录、组织流程、调用模块。
-- `script/`：shell 辅助脚本。只放辅助命令，不承载业务算法。
-- `python/`：只放 Python 模块。
-- `output/`：统一输出目录。
-- `temp/`：统一临时目录。
-- `src/`：放 R、C++ 或其他非 Python 模块。
-- `conf/`：统一配置入口，固定使用 `conf/Config.yaml`。
-
-### 2. 文件与目录命名
-
-所有承载流程步骤或业务功能的代码文件都必须使用“数字前缀-模块名-功能描述”的格式命名。编号必须反映步骤顺序，模块名和功能描述使用小写英文，单词之间用下划线连接。
-
-推荐命名模式：
+**所有标准目录必须直接建立在项目工作目录（项目根）下**，禁止嵌套在任何子目录中。
 
 ```text
-pipe/<主步骤编号>-<module_or_function>.sh
-python/<主步骤编号>-<子步骤编号>-<module_or_function>.py
-src/<主步骤编号>-<子步骤编号>-<module_or_function>.<ext>
+<project_root>/          ← 调用此 skill 时所在的目录
+  conf/                  ← 每个 pipe 步骤对应一个 YAML
+  pipe/                  ← 总控脚本（每步骤一个 .sh）
+  script/                ← shell 辅助工具
+  python/                ← Python 模块
+  src/                   ← R、C++ 等其他语言模块
+  output/                ← 按步骤组织的输出
+  temp/                  ← 临时文件
+  data/                  ← 原始数据
+  input/                 ← 输入文件
+  log/                   ← 日志
 ```
 
-示例：
+若用户在 `~/project1/` 下使用此 skill，则必须形成 `~/project1/conf/`、`~/project1/output/` 等，**绝对不能**在 `~/project1/files1/` 或任何子目录下再建这些标准目录。
+
+### 2. pipe → conf → output 严格一一对应
+
+每个流程步骤由三部分组成，编号和名称必须完全一致：
 
 ```text
-pipe/1-data_preprocessing.sh
-python/1-1-data_preprocessing.py
-python/1-2-feature_engineering.py
-src/2-1-statistical_modeling.R
+pipe/1-data_preprocessing.sh       ← 总控脚本
+conf/1-data_preprocessing.yaml     ← 该步骤专属配置
+output/1-data_preprocessing/       ← 该步骤全部输出
+  1-table/
+  2-figure/
+  3-report/
 ```
 
-禁止对业务步骤使用无编号、无功能语义或泛化名称，例如：
+- 一个 pipe 脚本只能读取与之同名的 conf YAML，禁止跨步骤共享配置文件
+- 禁止使用单一 `conf/Config.yaml` 统管所有步骤
+- 若任务规模大，**必须主动拆分**为多个编号步骤（如 `1-process`, `2-visualization`, `3-report`），不得将所有逻辑写入单个脚本
 
-- `pipe/run_pipeline.sh`
-- `python/example_step.py`
-- `python/main.py`
-- `script/process.py`
-
-`script/` 中仅用于配置加载、环境检查等非业务辅助工具时，可以保留描述性名称，例如 `load_config.sh`、`check_env.sh`。如果 `script/` 中的文件承载具体业务步骤，也必须使用同样的编号命名规范。
-
-### 3. 输出与临时目录组织
-
-每个主步骤的输出必须按步骤名集中在独立目录下，并按结果类型拆分为表格、图片和报告。目录编号必须与主步骤编号一致。
-
-推荐结构：
+多步骤示例：
 
 ```text
-output/
-- 1-data_preprocessing/
-  - 1-table/
-  - 2-figure/
-  - 3-report/
-temp/
-- 1-data_preprocessing/
+pipe/1-process.sh          conf/1-process.yaml          output/1-process/
+pipe/2-visualization.sh    conf/2-visualization.yaml    output/2-visualization/
+pipe/3-report.sh           conf/3-report.yaml           output/3-report/
 ```
 
-目录职责固定如下：
+### 3. 文件命名
 
-- `output/<步骤编号>-<步骤名>/1-table/`：表格、矩阵、统计结果、可继续被下游读取的数据文件。
-- `output/<步骤编号>-<步骤名>/2-figure/`：图片、图表、可视化结果。
-- `output/<步骤编号>-<步骤名>/3-report/`：报告、摘要、日志型结论、可读说明文档。
-- `temp/<步骤编号>-<步骤名>/`：该步骤的中间文件、缓存和可删除临时产物。
+所有承载业务步骤的代码文件必须使用"数字前缀-功能名"格式：
 
-禁止使用含义不清或不分类型的输出目录，例如 `output/1/data/`、`output/result/`、`output/tmp/`。
+```text
+pipe/<N>-<name>.sh
+python/<N>-<M>-<name>.py
+src/<N>-<M>-<name>.<ext>
+```
 
-### 4. 单文件单语言
+`script/` 中仅用于环境检查、配置加载等非业务辅助工具时，可用描述性名称（如 `load_config.sh`、`check_env.sh`）。
 
-一种文件只允许一种语言。禁止在 shell/bash/bat 文件中嵌入 Python、R 或其他语言片段。
+### 4. 输出目录
 
-禁止模式包括但不限于：
+```text
+output/<N>-<name>/
+  1-table/      ← 表格、矩阵、统计结果、下游可读数据
+  2-figure/     ← 图片（每张图必须伴有同名 TSV）
+  3-report/     ← 报告、摘要、可读说明文档
+temp/<N>-<name>/  ← 中间文件和缓存
+```
 
-- `python <<'EOF'`
-- `Rscript <<'EOF'`
-- `cat <<'EOF' | python`
-- 任何 here-doc 包装的跨语言执行片段
+**2-figure/ 图文伴随规则**：`2-figure/` 下每个图文件必须在同目录下有同名 `.tsv` 文件，默认采用 long table 格式，包含直接用于出图的全部数据列。禁止只输出图而不输出对应数据文件。
 
-### 5. 参数与配置
+```text
+output/1-process/2-figure/
+  volcano_plot.pdf
+  volcano_plot.tsv    ← 必须同时输出
+  heatmap.png
+  heatmap.tsv         ← 必须同时输出
+```
 
-总控脚本必须从 `conf/Config.yaml` 读取配置，再通过命名 CLI 参数把参数传给模块。模板默认使用简单 YAML 子集，并通过 `source script/load_config.sh conf/Config.yaml` 把配置加载为 shell 变量。所有软件相关设置也必须进入 YAML，包括但不限于 `python3`、`Rscript`、第三方二进制、`conda` 可执行文件路径、`conda` 环境名、`conda` 环境前缀。shell 只负责读取这些变量并执行，不允许在脚本里再写死软件安装位置或环境位置。
+### 5. 单文件单语言
 
-编写 `conf/Config.yaml` 时必须满足以下格式要求：
+禁止在 shell 文件中嵌入 Python、R 或其他语言片段（`python <<'EOF'`、`Rscript <<'EOF'`、`cat <<'EOF' | python` 等）。
 
-- 必须添加块级注释和关键字段行尾注释，说明 section 用途与字段含义。
-- 必须按职责分层，优先拆成 `project`、`paths`、`tools`、`runtime` 这类 section；有步骤专属输出时，再在 `paths` 下继续分组命名。
-- 路径字段必须清楚区分“项目根目录”“输入文件”“通用目录”“步骤输出目录”，不要把所有路径堆在一个 section。
-- 工具字段必须集中放入 `tools`，避免把解释器、二进制、环境前缀散落到其他 section。
-- 运行参数例如线程数、阈值、批次大小、是否跳步等，必须集中放入 `runtime` 或其他语义明确的参数 section。
-- 默认优先使用相对于 `project.base_dir` 的相对路径；如果必须使用绝对路径，也要在注释中明确其角色。
+### 6. 配置规范
 
-推荐模板风格如下，保留这种“标题注释 + section 注释 + 行尾注释”的层次，不要照搬具体字段名到不相关项目：
+每个步骤的 `conf/<N>-<name>.yaml` 按职责分层：
 
 ```yaml
-# =====================================================================
-# <流程名称> — 配置文件
-# 所有路径均支持：绝对路径 / 相对路径（相对于 base_dir）
-# =====================================================================
+# <步骤名> — 配置文件
 
 project:
-  base_dir: "/abs/path/to/project"      # 项目根目录
-  input_table: "data/input/sample.tsv"  # 主输入文件或主元数据表
+  base_dir: "."                     # 项目根目录
 
-# --------------------------------------------------------------------- #
-# 目录结构：相对路径默认相对于 project.base_dir                         #
-# --------------------------------------------------------------------- #
 paths:
-  python_dir: "python"             # Python 模块目录
-  src_dir: "src"                   # R/C++/其他模块目录
-  helper_dir: "script"             # shell 辅助脚本目录
-  data_dir: "data"                 # 原始数据与资源目录
-  temp_dir: "temp"                 # 临时目录根目录
-  log_dir: "log"                   # 日志目录
-  output_dir: "output"             # 输出根目录
-  output_step1_table: "output/1-data_preprocessing/1-table"    # 步骤 1 表格输出
-  output_step1_figure: "output/1-data_preprocessing/2-figure"  # 步骤 1 图片输出
-  output_step1_report: "output/1-data_preprocessing/3-report"  # 步骤 1 报告输出
-  temp_step1: "temp/1-data_preprocessing"                      # 步骤 1 临时目录
+  input: "input/sample.tsv"
+  output_table: "output/1-<name>/1-table"
+  output_figure: "output/1-<name>/2-figure"
+  output_report: "output/1-<name>/3-report"
+  temp: "temp/1-<name>"
 
-# --------------------------------------------------------------------- #
-# 工具路径：集中管理解释器、二进制和环境                                 #
-# --------------------------------------------------------------------- #
 tools:
-  conda_bin: "/path/to/conda"          # conda 可执行文件
-  python_bin: "/path/to/python3"       # Python 解释器
-  python_env_prefix: "/path/to/env"    # conda 环境前缀
-  rscript_bin: "/usr/bin/Rscript"      # Rscript 路径
+  python_bin: "/path/to/python3"
+  conda_bin: "/path/to/conda"
+  python_env_prefix: "/path/to/env"
 
-# --------------------------------------------------------------------- #
-# 运行参数：统一放线程数、阈值、开关等                                   #
-# --------------------------------------------------------------------- #
 runtime:
-  jobs: 8                  # 并行线程数
-  min_depth: 10            # 示例阈值参数
-  overwrite: false         # 是否覆盖已有输出
+  jobs: 8
+  overwrite: false
 ```
 
-默认参数风格如下：
+配置通过 `source script/load_config.sh conf/<N>-<name>.yaml` 加载为 shell 变量，再通过命名 CLI 参数传给模块。模块禁止自行读取 YAML。
+
+模块调用模式：
 
 ```bash
 "$PYTHON_BIN" python/1-1-data_preprocessing.py \
-  --input "$INPUT_DIR" \
+  --input  "$INPUT" \
   --output "$OUTPUT_TABLE" \
-  --ref "$REFERENCE" \
-  --jobs "$JOBS"
+  --jobs   "$JOBS"
 ```
 
-模块不得自行读取 `conf/Config.yaml` 作为默认工作方式，除非该模块被明确设计为配置解析器。业务模块必须从总控接收参数，不得依赖全局变量、环境变量或隐式工作目录状态。
+### 7. 禁止硬编码
 
-涉及环境切换时，推荐也按同一原则写成配置驱动，例如：
+模块文件中禁止出现绝对路径、输入输出路径、软件路径、conda 路径、线程数等。shell 总控中禁止硬编码 `python3`、`Rscript`、`conda` 等工具路径。所有这些值必须来自对应步骤的 conf YAML。
 
-```bash
-"$CONDA_BIN" run -p "$ALIGN_ENV_PREFIX" python "$PYTHON_STEP" \
-  --input "$INPUT_DIR" \
-  --output "$OUTPUT_FILE"
-```
+## 工作流程
 
-或：
+**新建项目**：运行 `bash scripts/init_pipeline_layout.sh <target_dir>` 复制模板，再按步骤补充 pipe/、conf/、python/ 或 src/ 中的脚本。
 
-```bash
-"$CONDA_BIN" run -n "$ALIGN_ENV_NAME" "$SAMTOOLS_BIN" sort \
-  -@ "$JOBS" \
-  -o "$OUTPUT_BAM" \
-  "$INPUT_BAM"
-```
-
-这里的 `CONDA_BIN`、`ALIGN_ENV_PREFIX`、`ALIGN_ENV_NAME`、`SAMTOOLS_BIN` 都必须来自 `conf/Config.yaml`，不能在 shell 中写成固定绝对路径。
-
-模板内置的 shell 加载器只支持以下 YAML 范围：
-
-- 顶层 section 加二级 key 的嵌套映射
-- 标量值，例如字符串、数字、布尔占位值
-- 两空格缩进
-- 行尾注释
-
-因此，推荐保持在“section -> key”或“section -> 分组命名 key”的简单层次，不要写需要数组解析的结构。
-
-如果配置复杂到需要列表、多行字符串、锚点或更深层级，应改用更明确的配置方案，不要假装 shell 解析了完整 YAML。
-
-### 6. 禁止硬编码
-
-禁止在模块文件中硬编码以下内容：
-
-- 绝对路径，例如 `/mnt/...`、`C:\...`
-- 输入输出文件路径
-- 参考文件路径
-- 软件可执行文件路径
-- conda 可执行文件路径
-- conda 环境名或环境前缀
-- 线程数、阈值等运行参数
-- 假定外部目录结构的常量
-
-禁止在 shell 总控或辅助脚本中硬编码以下内容：
-
-- `python`、`python3`、`Rscript`、`perl`、`java`、`samtools`、`bwa`、`blastn` 等软件路径
-- `conda`、`mamba`、`micromamba` 的安装路径
-- 环境激活脚本路径
-- 具体环境目录，例如 `/path/to/miniconda3/envs/xxx`
-
-允许硬编码的内容仅限：
-
-- 参数名
-- 合法默认值的占位示例
-- 不依赖具体环境的常规常量
-
-## 工作方式
-
-### 新建项目时
-
-1. 先使用 `scripts/init_pipeline_layout.sh <target_dir>` 复制模板项目。
-2. 再根据任务替换 `conf/Config.yaml` 示例字段。
-3. 按编号命名补充 `pipe/`、`python/` 或 `src/` 中的步骤脚本。
-4. 按 `output/<步骤编号>-<步骤名>/{1-table,2-figure,3-report}/` 和 `temp/<步骤编号>-<步骤名>/` 组织结果。
-5. 只在 `pipe/` 中组织流程，不把算法实现写入主控脚本。
-
-### 重构旧脚本时
-
-1. 先识别当前脚本中的配置、流程控制、业务算法。
-2. 把配置迁移到 `conf/Config.yaml`。
-3. 把流程控制迁移到 `pipe/`。
-4. 把业务逻辑拆分到 `python/` 或 `src/`。
-5. 重命名代码文件，使业务步骤符合数字前缀规范。
-6. 重组输出目录，使每个主步骤包含 `1-table/`、`2-figure/`、`3-report/`，临时文件进入 `temp/`。
-7. 删除跨语言混写和模块硬编码。
-
-## 模式参考
-
-参考 `/mnt/f/onedrive/文档（科研）/脚本/Download/1-fasta-nucmer/2-nucmer运行/1-mtDNA/script/1-nucmer.sh` 的总控思路：
-
-- 由 shell 统一调度流程
-- 明确输入、输出和依赖工具
-- 模块脚本只做单一步骤
-
-但本 skill 要求把脚本头部集中硬编码变量升级为：
-
-- `conf/Config.yaml` 统一配置
-- 总控脚本通过 shell 加载器读取配置
-- 通过命名 CLI 参数调用模块
-
-## 附带资源
-
-- 详细规范：读取 `references/standards.md`
-- 项目模板：使用 `assets/project-template/`
-- 初始化脚本：运行 `bash scripts/init_pipeline_layout.sh <target_dir>`
-
-## 不适用场景
-
-以下场景不要使用这个 skill：
-
-- 普通单文件 Python 或 shell 小工具
-- 纯 Python 包或通用库开发
-- Web 前端或服务端框架项目
-- Jupyter Notebook 探索分析
+**重构旧脚本**：识别配置→迁移到 conf YAML；识别流程控制→迁移到 pipe；识别业务逻辑→迁移到 python/ 或 src/；重组输出目录；消除跨语言混写和硬编码。
