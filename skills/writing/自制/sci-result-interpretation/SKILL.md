@@ -1,6 +1,6 @@
 ---
 name: sci-result-interpretation
-description: 面向科研写作的结果解读技能。根据用户提供的图表、统计检验和模型输出，生成详细的 Methods and Materials、Results、Discussion 三章节双语内容（中文在前，英文在后），并提供完整性与风格检查。用于“解读图表统计结果”“补全详细方法学”“撰写结果与讨论”等场景。
+description: 科研结果解读技能。
 ---
 
 
