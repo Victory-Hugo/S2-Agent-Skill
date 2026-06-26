@@ -14,7 +14,8 @@ SOURCE_DIR="/mnt/f/onedrive/文档（科研）/脚本/Download/S2-Agent-Skill/sk
 #! 不再单独同步，避免数据冗余。各账号目录已通过软链接指向共享目录。
 #! 若要新增 claude 账号，请在 2-建立共享链接.sh 中添加，无需修改本脚本。
 TARGET_DIRS=(
-    "/home/luolintao/.codex/skills/"
+    "/home/luolintao/.codex-shared/skills/"
+    "/home/luolintao/.codex-account-AICodeMirror/skills/"
     "/home/luolintao/.claude-shared/skills/"
     # 当存在2个claude官方账户时，无法使用cc-switch切换，创建2个/home/claude文件夹，并指向同一个skill
     "/home/luolintao/.copilot/skills/"
