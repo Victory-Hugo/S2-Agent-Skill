@@ -36,14 +36,14 @@ description: 编写或者修改代码至符合规范科研和数据处理的流�
 pipe/1-data_preprocessing.sh       ← 总控脚本
 conf/1-data_preprocessing.yaml     ← 该步骤专属配置
 output/1-data_preprocessing/       ← 该步骤全部输出
-  1-table/
-  2-figure/
-  3-report/
+  1-table/1-1-XXXX,1-2-XXXX……
+  2-figure/1-1-XXXX,1-2-XXXX……
+  3-report/1-1-XXXX,1-2-XXXX……
 ```
 
 - 一个 pipe 脚本只能读取与之同名的 conf YAML，禁止跨步骤共享配置文件
 - 禁止使用单一 `conf/Config.yaml` 统管所有步骤
-- 若任务规模大，**必须主动拆分**为多个编号步骤（如 `1-process`, `2-visualization`, `3-report`），不得将所有逻辑写入单个脚本
+- 若任务规模大，**必须主动拆分**为多个编号步骤，不得将所有逻辑写入单个脚本
 
 多步骤示例：
 
@@ -79,10 +79,10 @@ temp/<N>-<name>/  ← 中间文件和缓存
 
 ```text
 output/1-process/2-figure/
-  volcano_plot.pdf
-  volcano_plot.tsv    ← 必须同时输出
-  heatmap.png
-  heatmap.tsv         ← 必须同时输出
+  1-1-volcano_plot.pdf
+  1-1-volcano_plot.tsv    ← 必须同时输出
+  1-2-heatmap.png
+  1-2-heatmap.tsv         ← 必须同时输出
 ```
 
 ### 5. 单文件单语言

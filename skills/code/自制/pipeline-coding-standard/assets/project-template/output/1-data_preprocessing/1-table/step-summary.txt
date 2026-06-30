@@ -1,4 +1,0 @@
-example_step completed
-input=/mnt/f/OneDrive/文档（科研）/脚本/Download/S2-Agent-Skill/skills/code/自制/pipeline-coding-standard/assets/project-template/./data/input/sample.tsv
-reference=/mnt/f/OneDrive/文档（科研）/脚本/Download/S2-Agent-Skill/skills/code/自制/pipeline-coding-standard/assets/project-template/./data/reference/reference.fa
-jobs=4
