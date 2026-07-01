@@ -22,6 +22,48 @@ output/
     └── download_skipped.tsv  # 未下载时记录
 ```
 
+## 检索与下载 API 优先原则
+
+直接爬取出版社网页（PDF、正文图表、补充材料）常触发人机验证，应优先走官方 API/程序化接口，仅在 API 均无结果时才尝试直接访问网页，且需在记录中注明可能遇到验证码、访问受限。
+
+### 密钥与联系邮箱
+
+- NCBI 邮箱与 API key 存放于 `key/1-NCBI-API.key`（第一行邮箱，第二行 api_key）。该目录已加入 `.gitignore`，禁止提交到版本库或写入报告正文。
+- Crossref、Unpaywall 调用一律带上 `key/1-NCBI-API.key` 中的邮箱（或用户提供的其他联系邮箱）作为 `mailto` / `email` 参数，并在 User-Agent 中注明工具名与该邮箱，以进入 polite pool / 避免被拒绝。
+
+### 检索顺序（按数据类型）
+
+1. **已知 DOI 查元数据**：`https://api.crossref.org/works/{DOI}?mailto=<邮箱>`。
+2. **查合法开放获取全文**：`https://api.unpaywall.org/v2/{DOI}?email=<邮箱>`，取 `best_oa_location`/`oa_locations` 中的直链（机构库、Zenodo、Figshare、作者稿等）。
+3. **生物医学文献 / PMC 全文包（含图表、补充材料）**：
+   - 检索：`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi`、`efetch.fcgi`、`esummary.fcgi`，带 `api_key`、`email`、`tool` 参数。
+   - PMC 开放全文包（含正文图表 JATS XML 及可用补充材料）：`https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi?id=<PMCID>`，下载返回的 `.tar.gz`。
+   - 无 api_key 时限速 ≤3 次/秒；带 api_key 时 ≤10 次/秒，禁止超过。
+4. **正文图表资源（Figure、JATS XML 中的表格、PDF 中的图）**：优先从 PMC 全文包 JATS XML 或出版社 TDM/Crossref `link` 字段中的 XML/PDF 直链获取；缺失时才尝试出版社页面直接抓图。
+5. **补充材料文件（xlsx/csv/docx/zip、Supplementary Table/Figure、Figshare/Zenodo 数据）**：
+   - 依次尝试：Unpaywall 命中的仓库页面（Zenodo/Figshare/Dryad 等）→ Crossref 元数据中的 `relation`/`link` 字段 → Europe PMC `supplementaryFiles` 接口（见下）→ 出版社自有 ESM 服务器（见下）。
+   - **Europe PMC 补充材料接口**（PMC OA 包被验证拦截时的首选替代）：`https://www.ebi.ac.uk/europepmc/webservices/rest/{PMCID}/supplementaryFiles`，返回 zip，通常能绕过 PMC 网页版的人机验证/PoW 挑战，直接拿到图片、SI 说明文档等。
+   - **⚠️ 完整性核查（重要，勿漏项）**：Europe PMC / PMC OA 包只包含"存档到 PMC 的部分"（通常是正文图 + SI 说明 PDF/DOCX），**不等于出版社官网列出的全部附件**。数据类大表格（如 Supplementary Table，尤其是 xlsx）出版社常单独托管，不进入 PMC 存档。取得 PMC/Europe PMC 补充材料包后，必须再核对出版社文章页列出的附件清单（数量、文件名、格式），确认两边条目一一对应；有出入（尤其缺少 xlsx/csv 等数据表）时，按下方"出版社 ESM 直链模式"补齐，不能默认 PMC 包已是全集。
+   - **出版社 ESM 直链模式**（用于核对/补齐缺失附件，直接请求即可，通常无需人机验证）：
+     - **Springer/Nature**：文章页 `https://www.nature.com/articles/{文章ID}`（需带 `mailto:` User-Agent，`curl -sL` 跟随重定向）中搜索 `MediaObjects`/`MOESM` 关键词，可枚举出全部 `MOESM1, MOESM2, …` 附件及其中文描述（如 "Supplementary Tables"）；直链形如 `https://static-content.springer.com/esm/art%3A{URL编码DOI}/MediaObjects/{文章内部ID}_MOESM{N}_ESM.{ext}`。
+     - **PLOS**：文章页或 API 中搜索 `journals.plos.org/.../file?id=10.1371/...s{NNN}`，附件命名通常为 `S1 Table`、`S2 Fig` 等。
+     - **Wiley**：搜索 `onlinelibrary.wiley.com/action/downloadSupplement`。
+     - **Elsevier/Cell Press**：搜索 `ars.els-cdn.com`（Crossref `link` 字段有时也会给出）。
+     - 其他出版社未知模式时，直接 `curl -sL` 抓文章页 HTML，用关键词 `supplementary|ESM|MediaObjects|S1_|Table_S|\.xlsx|\.csv` 搜索，而非凭经验猜测跳过。
+6. **上述 API 均未命中，或出版社 ESM 直链也拿不到时**：允许尝试直接访问出版社页面完整渲染版本，但须在 `download_skipped.tsv` 或复核记录中注明"API 未命中，尝试直接访问"及最终结果（含遇到人机验证/PoW 挑战的情况，以及已尝试过的具体接口列表，避免下次重复踩坑）。
+
+### 限速与容错
+
+- 对同一域名的请求做基本限速（Crossref/Unpaywall 建议顺序请求，不并发轰炸）和失败退避（如遇 429，等待后重试，不重复硬闯）。
+- 对已查询过的 DOI/PMCID 结果可在当次任务内复用，避免重复请求。
+
+### 补充材料清单核对（工作流硬性步骤）
+
+在写入 `Citation_short` sheet 前，必须先列出"出版社官网声明的附件总数与类型"（从文章页 Supplementary Information 区块解析，如 "Supplementary Information / Reporting Summary / Supplementary Tables / Peer Review File" 各几份、什么格式），再与已下载/已获取的文件逐一核对是否齐全，在 `Citation_short` 中如实记录：
+- 出版社声明的附件清单（编号、文件名、格式、内容简介）；
+- 每项是否已获取、通过哪个接口获取、未获取的原因；
+- 若数据类附件（xlsx/csv 等 Supplementary Table）缺失，禁止仅凭 PDF 版 Supplementary Information 就判定"已完整收集"，须明确标注待补齐。
+
 ## 核心原则
 
 1. **模板不可变**：必须复制 `template/古代DNA收集模板-AI-agent.xlsx` 后再写入；保留字段、顺序、格式、公式、数据验证、下拉框、隐藏 sheet、命名区域，以及模板 sheet 第二行原始注释行。禁止用 `pandas.to_excel()` 等方式覆盖结构。
