@@ -1,9 +1,8 @@
-# 简洁 tidyverse 风格：ccgraph + ggraph 富集花瓣图
+# 简洁 tidyverse 风格：tidygraph + ggraph 富集花瓣图
 
 library(tidyverse)
 library(ggraph)
 library(tidygraph)
-library(ccgraph)
 library(treemap)
 
 # 数据准备：提取节点与边 -------------------------------------------------------
@@ -18,15 +17,66 @@ GNI2014 <- as_tibble(GNI2014)
 
 country_index <- c(LEAF_LEVEL1, LEAF_LEVEL2)
 
-nodes_country <- GNI2014 |>
-  gather_graph_node(index = country_index, value = SIZE, root = ROOT) |>
+nodes_country <- map_dfr(seq_along(country_index), \(i) {
+  node_columns <- country_index[seq_len(i)]
+
+  GNI2014 |>
+    group_by(across(all_of(node_columns))) |>
+    summarise(
+      node.size = sum(.data[[SIZE]]),
+      node.level = country_index[[i]],
+      node.count = n(),
+      .groups = "drop"
+    ) |>
+    mutate(
+      node.short_name = as.character(.data[[node_columns[[length(node_columns)]]]]),
+      node.branch = as.character(.data[[node_columns[[1]]]])
+    ) |>
+    unite(node.name, all_of(node_columns), sep = "/")
+})
+
+nodes_country <- bind_rows(
+  tibble(
+    node.name = ROOT,
+    node.size = sum(GNI2014[[SIZE]]),
+    node.level = ROOT,
+    node.count = 1L,
+    node.short_name = ROOT,
+    node.branch = ROOT
+  ),
+  nodes_country
+) |>
   mutate(
+    node.level = factor(node.level, levels = c(ROOT, country_index)),
     node.branch = if_else(is.na(node.branch), ROOT, node.branch),
     node.size   = replace_na(node.size, 0)
   )
 
-edges_country <- GNI2014 |>
-  gather_graph_edge(index = country_index, root = ROOT)
+edges_country <- map_dfr(seq(2, length(country_index)), \(i) {
+  node_columns <- country_index[seq_len(i)]
+
+  GNI2014 |>
+    unite(
+      from,
+      all_of(node_columns[-length(node_columns)]),
+      sep = "/",
+      remove = FALSE
+    ) |>
+    unite(to, all_of(node_columns), sep = "/") |>
+    select(from, to) |>
+    mutate(across(c(from, to), as.character))
+})
+
+edges_country <- bind_rows(
+  GNI2014 |>
+    group_by(across(all_of(country_index[[1]]))) |>
+    summarise(.groups = "drop") |>
+    transmute(
+      from = ROOT,
+      to = as.character(.data[[country_index[[1]]]])
+    ),
+  edges_country
+)
 
 graph_country <- tbl_graph(nodes_country, edges_country)
 
