@@ -1,103 +1,61 @@
 ---
 name: tidyplots-plot-builder
-description: 生成和修复基于 tidyplots 的 R 绘图工作流。用于用户要求使用 tidyplots 包进行绘图、改图、配色优化、统计标注、分面输出、导出 PDF/PNG、多图排版、报错排查（如找不到函数/包）等场景。输入可以是数据结构描述、列名、目标图形类型、风格约束或期刊图规范。
+description: 使用 tidyplots 编写、修改或排查 R 绘图代码时使用，包括图形生成、配色、统计标注、分面、多图排版及图片导出。
 ---
 
-# tidyplots-plot-builder
+# tidyplots 绘图规范
 
-## Overview
+## 工作流程
 
-将用户的绘图目标转成可直接运行的 tidyplots 代码，优先提供最小可运行版本，再给增强版本与排错路径。统一采用 tidyplots 管道式工作流并保持 `split_plot()` 在末尾阶段。
+按以下顺序组织代码：
 
-## Execution Workflow
+1. `tidyplot(...)`
+2. 一个或多个 `add_*()`
+3. 必要时使用 `remove_*()` 或 `adjust_*()`
+4. 分面时最后使用 `split_plot()`
+5. 导出时使用 `save_plot()`
 
-1. 明确任务类型：
-- 新建图：从 0 生成绘图代码。
-- 改图：在现有管道上新增或移除图层。
-- 调试：修复包、函数、列名、统计检验或导出问题。
+`split_plot()` 之后通常只允许调用 `save_plot()`。
 
-2. 明确输入最小集：
-- 数据来源：数据框对象名或文件加载方式。
-- 列映射：`x`、`y`、`color`。
-- 图目标：例如散点、均值+误差线、热图、比例、显著性比较。
+## 输出要求
 
-3. 固定绘图顺序：
-- `tidyplot(...)`
-- 一个或多个 `add_*()`
-- 必要时 `remove_*()`
-- 必要时 `adjust_*()`
-- 需要分面时最后调用 `split_plot()`
-- 导出时调用 `save_plot()`
+优先提供可直接运行的最简代码，必须包含：
 
-4. 输出策略：
-- 先输出最小可运行代码。
-- 再输出增强代码（主题、配色、注释、导出）。
-- 最后给常见错误修复指引。
+```r
+library(tidyplots)
 
-## Output Contract
-
-始终按以下结构输出：
-
-1. `最小可运行代码`
-2. `增强版代码`（可选）
-3. `排错清单`
-
-最小可运行代码中必须出现：
-- `library(tidyplots)`
-- 至少一个 `tidyplot(...)`
-- 至少一个 `add_*()`
-
-## Version Compatibility Rule
-
-优先使用 tidyplots 新命名：
-- `rename_*_levels`
-- `reorder_*_levels`
-- `sort_*_levels`
-- `reverse_*_levels`
-
-若用户使用旧文档中的 `*_labels` 命名，明确给出兼容说明：
-- 先解释旧新命名差异。
-- 再给出当前环境可运行写法。
-
-## Debug Priority
-
-遇到报错时按以下顺序排查：
-
-1. 包加载：`library(tidyplots)`、`library(tidyverse)`。
-2. 环境检查：运行 `scripts/check_tidyplots_env.R`。
-3. 列名检查：确认 `x`/`y`/`color` 在数据框中存在。
-4. 管道顺序：确认 `split_plot()` 仅在末尾（之后仅允许 `save_plot()`）。
-5. 统计层：`add_test_pvalue()` 的方法、分组与参考组参数。
-
-## Script Usage
-
-### 快速环境检查
-
-```bash
-Rscript scripts/check_tidyplots_env.R
+tidyplot(...) |>
+  add_*()
 ```
 
-### 生成模板脚本
+根据需要补充配色、统计标注、分面和导出代码。仅在发生报错时提供排错说明。
 
-```bash
-Rscript scripts/new_tidyplot_template.R \
-  --mode grouped-summary \
-  --dataset study \
-  --x treatment \
-  --y score \
-  --color treatment \
-  --output /tmp/tidyplot_example.R
-```
+## 命名兼容
 
-## Reference Loading Guide
+优先使用新版函数：
 
-按任务读取最少必要 references：
+* `rename_*_levels`
+* `reorder_*_levels`
+* `sort_*_levels`
+* `reverse_*_levels`
 
-- 入门和标准流程：`references/01-get-started.md`
-- 常见图形和统计表达：`references/02-visualizing-data.md`
-- 栅格化、子集、多图、兼容性：`references/03-advanced-plotting.md`
-- 内置与自定义配色：`references/04-color-schemes.md`
-- 函数速查：`references/05-function-index.md`
-- 可复用任务模板：`references/06-common-recipes.md`
+用户使用旧版 `*_labels` 函数时，说明命名差异并改为当前版本可用写法。
 
-仅在对应任务需要时读取相关文件，不要一次性加载全部参考文档。
+## 排错顺序
+
+1. 检查 `tidyplots` 是否安装并加载
+2. 检查数据框和列名
+3. 检查管道顺序
+4. 检查 `split_plot()` 的位置
+5. 检查统计检验参数
+
+## 参考文档
+
+仅按任务读取必要文件：
+
+* 基础流程：`references/01-get-started.md`
+* 图形和统计：`references/02-visualizing-data.md`
+* 高级绘图：`references/03-advanced-plotting.md`
+* 配色：`references/04-color-schemes.md`
+* 函数索引：`references/05-function-index.md`
+* 常用模板：`references/06-common-recipes.md`
