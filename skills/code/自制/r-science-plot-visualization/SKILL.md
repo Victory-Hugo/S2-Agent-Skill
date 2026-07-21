@@ -22,3 +22,5 @@ description: 使用R语言绘制科学图形。
    * [pheatmap配对热图](../r-science-plot-visualization/script/4-pheatmap配对热图/pheatmap配对热图.R)
 5. 表示系统发育：
    * [时间树节点气泡图](../r-science-plot-visualization/script/5-时间树节点气泡图/时间树节点气泡图.R)
+6. 表示组间差异及统计显著性：
+   * [火山图](../r-science-plot-visualization/script/6-火山图/火山图.R)
