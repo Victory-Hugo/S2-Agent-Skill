@@ -2,6 +2,7 @@
 library(ggplot2)
 library(ggrepel)
 library(dplyr)
+library(knitr)
 
 #* =====设置输入输出=====
 # 获取脚本所在目录；使用 Rscript 运行时，输入数据和图片均定位到脚本同级目录

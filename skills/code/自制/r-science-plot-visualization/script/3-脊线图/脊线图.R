@@ -3,8 +3,10 @@ library(ggtext)
 library(ggdist)
 library(glue)
 library(patchwork)
+library(MetBrewer)
+library(knitr)
 
-#* =====定位与下载数据=====
+#* =====配置与检查=====
 # 定位当前脚本，避免工作目录不同导致文件找不到
 command_args <- commandArgs(trailingOnly = FALSE)
 file_arg <- grep("^--file=", command_args, value = TRUE)
@@ -19,30 +21,15 @@ if (length(file_arg) > 0) {
   script_dir <- getwd()
 }
 
-data_dir <- file.path(script_dir)
-dir.create(data_dir, recursive = TRUE, showWarnings = FALSE)
-
-data_base_url <- paste0(
-  "https://raw.githubusercontent.com/holtzy/",
-  "R-graph-gallery/master/DATA"
-)
+data_dir <- script_dir
 data_files <- c("rent.csv", "rent_title_words.csv", "df_plot.csv")
-
-# 仅下载本地缺失的数据文件
-for (data_file in data_files) {
-  data_path <- file.path(data_dir, data_file)
-  if (!file.exists(data_path)) {
-    download.file(
-      url = paste(data_base_url, data_file, sep = "/"),
-      destfile = data_path,
-      mode = "wb",
-      method = "libcurl"
-    )
-  }
+missing_files <- data_files[!file.exists(file.path(data_dir, data_files))]
+if (length(missing_files)) {
+  stop("缺少输入文件：", paste(missing_files, collapse = ", "), call. = FALSE)
 }
 
 #* =====读取数据=====
-# 读取已下载的数据
+# 读取本地示例数据
 rent <- read_csv(file.path(data_dir, "rent.csv"), show_col_types = FALSE)
 rent_title_words <- read_csv(
   file.path(data_dir, "rent_title_words.csv"),
@@ -55,7 +42,8 @@ knitr::kable(head(rent))
 knitr::kable(head(rent_title_words))
 knitr::kable(head(df_plot))
 
-# sort dataframe by mean_price
+#* =====处理数据=====
+# 按平均价格排序
 df_plot <- df_plot %>% arrange(desc(mean_price))
 df_plot$word <- factor(df_plot$word, levels = unique(df_plot$word))
 
@@ -66,7 +54,7 @@ n_rental_posts <- nrow(subset(rent, !is.na(title)))
 bg_color <- "grey97"
 font_family <- "sans"
 
-plot_subtitle = glue("Adjectives used to describe houses and apartments
+plot_subtitle <- glue("Adjectives used to describe houses and apartments
 in the San Francisco Bay Area in the titles of rental posts on Craigslist and 
 how they are related to rental prices. Titles from 
 {scales::number(n_rental_posts, big.mark = ',')} rental posts on Craigslist
@@ -132,7 +120,7 @@ p <- df_plot %>%
     plot.margin = margin(4, 4, 4, 4)
   )
 
-# create the dataframe for the legend (inside plot)
+# 创建图内图例数据
 df_for_legend <- rent_title_words %>% 
   filter(word == "beautiful")
 
@@ -168,9 +156,11 @@ p_legend <- df_for_legend %>%
                                   hjust = 0.075),
         plot.background = element_rect(color = "grey30", size = 0.2, fill = bg_color))
 
-# Insert the custom legend into the plot
-p + inset_element(p_legend, l = 0.6, r = 1.0,  t = 0.99, b = 0.7, clip = FALSE)
+#* =====输出=====
+p2 <- p + inset_element(p_legend, l = 0.6, r = 1.0, t = 0.99, b = 0.7, clip = FALSE)
 ggplot2::ggsave(
   filename = file.path(data_dir, "rent_title_words_plot.pdf"),
+  plot = p2,
   dpi = 300
 )
+p2

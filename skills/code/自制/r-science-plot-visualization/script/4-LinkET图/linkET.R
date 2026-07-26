@@ -1,24 +1,31 @@
-############################################################
-# 0. 环境准备
-############################################################
-# 加载所需 R 包（确保已安装）
-library(linkET)     # 相关性计算 + 可视化（qcorrplot, correlate, geom_couple 等）
-library(ggplot2)    # 基础绘图系统
-library(dplyr)      # 数据整理（mutate、管道等）
-library(cols4all)   # 调色板
-library(RColorBrewer) # 额外色板
-library(ggtext)       # 更丰富的主题元素
+library(linkET)
+library(ggplot2)
+library(dplyr)
+library(cols4all)
+library(RColorBrewer)
+library(ggtext)
 
-############################################################
-# 1. 读取数据
-############################################################
+#* =====配置与检查=====
+script_arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)
+script_dir <- if (length(script_arg)) {
+  dirname(normalizePath(sub("^--file=", "", script_arg[[1]])))
+} else {
+  getwd()
+}
+frequency_file <- file.path(script_dir, "1-Frequency.csv")
+geographic_file <- file.path(script_dir, "2-Geographic.csv")
+if (!file.exists(frequency_file) || !file.exists(geographic_file)) {
+  stop("缺少 1-Frequency.csv 或 2-Geographic.csv。", call. = FALSE)
+}
+
+#* =====读取数据=====
 # 假设两个文件：
 #   1-Frequency.csv : 生物学指标 / 单倍群频率等（auto_data）
 #   2-Geographic.csv: 环境/地理变量（haplo_data）
 # 行名 = 群体/样本，列名 = 指标或变量名
 
 auto_data <- read.csv(
-  "1-Frequency.csv",
+  frequency_file,
   row.names    = 1,    # 第一列作为行名
   header       = TRUE, # 第一行是表头
   sep          = ",",
@@ -26,16 +33,14 @@ auto_data <- read.csv(
 )
 
 haplo_data <- read.csv(
-  "2-Geographic.csv",
+  geographic_file,
   row.names    = 1,
   header       = TRUE,
   sep          = ",",
   check.names  = FALSE
 )
 
-############################################################
-# 2. 计算相关性矩阵并导出
-############################################################
+#* =====计算相关性=====
 
 # 2.1 环境变量自身之间的 Pearson 相关（env vs env）
 cor_auto  <- correlate(haplo_data, method = "pearson")
@@ -43,7 +48,7 @@ corr_auto <- as_md_tbl(cor_auto)   # 转成 linkET 用的整洁格式
 
 write.csv(
   corr_auto,
-  file      = "pearson_correlate.csv",
+  file      = file.path(script_dir, "pearson_correlate.csv"),
   row.names = TRUE
 )
 
@@ -54,13 +59,11 @@ corr_auto_haplo <- as_md_tbl(cor_auto_haplo)
 
 write.csv(
   corr_auto_haplo,
-  file      = "pearson_result.csv",
+  file      = file.path(script_dir, "pearson_result.csv"),
   row.names = TRUE
 )
 
-############################################################
-# 3. 为连线准备分组变量（方向、显著性、强度）
-############################################################
+#* =====处理绘图数据=====
 
 # corr_auto_haplo 的典型结构：
 #   x, y, r, p  等列
@@ -97,9 +100,7 @@ r_p_data_plot <- corr_auto_haplo %>%
     )
   )
 
-############################################################
-# 4. 绘制环境变量相关性矩阵（上三角）——圆形标记
-############################################################
+#* =====绘图=====
 
 # qcorrplot() 基于 linkET，输出一个 ggplot 对象：
 #   - type = "upper"：只画上三角
@@ -226,3 +227,10 @@ p7 <- p6 +
 
 p7
 
+#* =====输出=====
+ggsave(
+  file.path(script_dir, "LinkET图.pdf"),
+  p7,
+  width = 10,
+  height = 8
+)

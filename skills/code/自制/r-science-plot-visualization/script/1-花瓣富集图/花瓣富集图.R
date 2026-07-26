@@ -1,11 +1,17 @@
-# 简洁 tidyverse 风格：tidygraph + ggraph 富集花瓣图
-
 library(tidyverse)
 library(ggraph)
 library(tidygraph)
 library(treemap)
 
-# 数据准备：提取节点与边 -------------------------------------------------------
+#* =====配置=====
+script_arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)
+script_dir <- if (length(script_arg)) {
+  dirname(normalizePath(sub("^--file=", "", script_arg[[1]])))
+} else {
+  getwd()
+}
+
+#* =====读取与处理=====
 data("GNI2014", package = "treemap")
 
 ROOT <- "world"             #? 根节点名称
@@ -80,8 +86,7 @@ edges_country <- bind_rows(
 
 graph_country <- tbl_graph(nodes_country, edges_country)
 
-# 配色：按分支构建调色板 -------------------------------------------------------
-
+#* =====配色=====
 branches <- graph_country |>
   activate(nodes) |>
   as_tibble() |>
@@ -96,7 +101,7 @@ palette_cols <- c(
 
 names(palette_cols) <- branches
 
-# 绘图 --------------------------------------------------------------------------
+#* =====绘图与输出=====
 p <- graph_country |>
   ggraph(layout = "dendrogram", circular = TRUE) +
   geom_edge_diagonal(
@@ -134,4 +139,5 @@ p <- graph_country |>
   coord_fixed() +
   coord_cartesian(xlim = c(-1.3, 1.3), ylim = c(-1.3, 1.3))
 
-ggsave(p, filename = "花瓣富集图.pdf")
+ggsave(p, filename = file.path(script_dir, "花瓣富集图.pdf"))
+p

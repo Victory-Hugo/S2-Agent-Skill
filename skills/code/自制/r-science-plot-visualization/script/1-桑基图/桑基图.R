@@ -2,12 +2,27 @@ library(ggsankeyfier)
 library(tidyverse)
 library(knitr)
 
-#* =====示例数据=====
+#* =====配置与检查=====
+script_arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)
+script_dir <- if (length(script_arg)) {
+  dirname(normalizePath(sub("^--file=", "", script_arg[[1]])))
+} else {
+  getwd()
+}
+input_file <- file.path(script_dir, "示例数据.tsv")
+if (!file.exists(input_file)) stop("缺少示例数据.tsv。", call. = FALSE)
+
+#* =====读取与处理=====
 # 读取四阶段示例数据
 dat1 <- read_tsv(
-  file = "示例数据.tsv", #* 输入 TSV 示例数据
+  file = input_file, #* 输入 TSV 示例数据
   show_col_types = FALSE
 )
+required_columns <- c("channel", "touchpoint", "intent", "outcome", "amount")
+missing_columns <- setdiff(required_columns, names(dat1))
+if (length(missing_columns)) {
+  stop("输入缺少列：", paste(missing_columns, collapse = ", "), call. = FALSE)
+}
 knitr::kable(head(dat1))
 
 # 设置节点顺序和阶段顺序
@@ -166,7 +181,7 @@ p6 <- p5 +
 
 # 保存图形
 ggsave(
-  filename = "桑基图.pdf",
+  filename = file.path(script_dir, "桑基图.pdf"),
   plot = p6,
   width = 11,
   height = 7,

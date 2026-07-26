@@ -2,6 +2,14 @@ library(ggraph)
 library(igraph)
 library(tidyverse)
 
+#* =====配置=====
+script_arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)
+script_dir <- if (length(script_arg)) {
+  dirname(normalizePath(sub("^--file=", "", script_arg[[1]])))
+} else {
+  getwd()
+}
+
 #* =====构建层级结构=====
 # 设置随机种子以保证结果可复现
 set.seed(1234)
@@ -159,7 +167,7 @@ p2 <- ggraph(my_graph, layout = "dendrogram", circular = TRUE) +
 #* =====保存最终图形=====
 # 使用等宽等高画布保存最终图形，避免圆形被压扁
 ggsave(
-  filename = "分层边捆绑图.pdf",
+  filename = file.path(script_dir, "分层边捆绑图.pdf"),
   plot = p2,
   width = 10,
   height = 10,

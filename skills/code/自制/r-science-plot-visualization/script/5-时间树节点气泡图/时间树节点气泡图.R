@@ -9,10 +9,14 @@ library(ggnewscale)
 # 设置项目路径和输入输出文件
 script_arg <- commandArgs(trailingOnly = FALSE)
 script_file <- sub("^--file=", "", script_arg[grepl("^--file=", script_arg)])
-project_dir <- normalizePath(file.path(dirname(script_file), ".."), mustWork = TRUE)
-tree_path <- "1-tree.tree"
-tip_metadata <- "2-meta.tsv"
-dir_output <- "output"
+script_dir <- if (length(script_file)) {
+  dirname(normalizePath(script_file))
+} else {
+  getwd()
+}
+tree_path <- file.path(script_dir, "1-tree.tree")
+tip_metadata <- file.path(script_dir, "2-meta.tsv")
+dir_output <- file.path(script_dir, "output")
 
 # 设置树解析参数
 branch_length_unit <- "years" #* 可选 years 或 kya
@@ -92,7 +96,7 @@ if (file.exists(tree_path) && !dir.exists(tree_path)) {
 }
 tree_files <- sort(tree_files)
 if (length(tree_files) == 0) {
-  stop("input/ 中没有 BEAST 或 Newick 树文件。")
+  stop("没有找到 BEAST 或 Newick 树文件。")
 }
 
 #* =====style=====
@@ -567,7 +571,7 @@ writeLines(
     paste0("- Minimum descendant tips: ", min_descendant_tips),
     paste0("- Regional majority threshold: ", majority_threshold),
     "",
-    "All tables and figures are written directly to output/."
+    paste0("All tables and figures are written to ", dir_output, ".")
   ),
   file.path(dir_output, "summary.md")
 )

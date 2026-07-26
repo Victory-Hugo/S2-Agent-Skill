@@ -1,25 +1,42 @@
-# 分层弦图（hierarchical edge bundling）示例
-
 library(tidyverse)
 library(igraph)
 library(ggraph)
 library(ggforce)
 
-nodes <- readr::read_csv("nodes.csv", show_col_types = FALSE)
-links <- readr::read_csv("links.csv", show_col_types = FALSE)
+#* =====配置与检查=====
+script_arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)
+script_dir <- if (length(script_arg)) {
+  dirname(normalizePath(sub("^--file=", "", script_arg[[1]])))
+} else {
+  getwd()
+}
+nodes_file <- file.path(script_dir, "nodes.csv")
+links_file <- file.path(script_dir, "links.csv")
+if (!file.exists(nodes_file) || !file.exists(links_file)) {
+  stop("缺少 nodes.csv 或 links.csv。", call. = FALSE)
+}
 
-# 排序并构图
-nodes_ordered <- nodes %>%
+#* =====读取与处理=====
+dat1 <- readr::read_csv(nodes_file, show_col_types = FALSE)
+dat2 <- readr::read_csv(links_file, show_col_types = FALSE)
+if (length(setdiff(c("country", "group", "size"), names(dat1)))) {
+  stop("nodes.csv 必须包含 country、group、size 列。", call. = FALSE)
+}
+if (length(setdiff(c("from", "to", "value", "Country"), names(dat2)))) {
+  stop("links.csv 必须包含 from、to、value、Country 列。", call. = FALSE)
+}
+
+nodes_ordered <- dat1 %>%
   arrange(group, country) %>%
   mutate(name = factor(country, levels = country))
 
 g <- graph_from_data_frame(
-  d = links %>% select(from, to, value, Country),
+  d = dat2 %>% select(from, to, value, Country),
   vertices = nodes_ordered %>% select(name, group, size),
   directed = FALSE
 )
 
-# 组的角度范围
+# 计算分组角度
 n_total <- gorder(g)
 idx_tbl <- tibble(
   name = V(g)$name,
@@ -35,7 +52,7 @@ group_span <- idx_tbl %>%
     end_angle = 2 * pi * end / n_total
   )
 
-# 布局、半径与色带
+# 计算布局和半径
 lay <- create_layout(g, layout = "linear", circular = TRUE)
 rad_est <- mean(sqrt(lay$x^2 + lay$y^2))
 
@@ -50,14 +67,14 @@ group_span_gap <- group_span %>%
     end_angle2 = ifelse(end_angle2 <= start_angle2, start_angle2 + 0.005, end_angle2)
   )
 
-# 颜色
+# 保留原有颜色
 base_cols <- c("#55C0BE", "#F1A340", "#5B8FD9", "#E36A77", "#5DBFE9", "#F4A99B")
 group_levels <- sort(unique(nodes_ordered$group))
 group_cols <- grDevices::colorRampPalette(base_cols)(length(group_levels)) %>%
   setNames(group_levels)
 edge_cols <- group_cols
 
-# 文本位置
+# 计算文本位置
 band_clearance <- 0.16
 band_thickness <- 0.06
 label_clearance <- 0.08
@@ -75,7 +92,8 @@ lab_df <- as_tibble(lay) %>%
     angle = -((as.numeric(factor(name, levels = levels(nodes_ordered$name))) - 0.5) / gorder(g)) * 360
   )
 
-ggraph(lay) +
+#* =====绘图与输出=====
+p <- ggraph(lay) +
   geom_edge_arc2(aes(width = value, colour = Country), alpha = 0.65, lineend = "round") +
   scale_edge_width(range = c(0.2, 2.8), guide = "none") +
   scale_edge_colour_manual(values = edge_cols, name = "Country") +
@@ -97,3 +115,12 @@ ggraph(lay) +
   theme_void() +
   guides(colour = "none") +
   theme(plot.margin = margin(15, 15, 15, 15), panel.background = element_rect(fill = "white", colour = NA))
+
+ggsave(
+  file.path(script_dir, "分层弦图.pdf"),
+  p,
+  width = 10,
+  height = 10,
+  bg = "white"
+)
+p
