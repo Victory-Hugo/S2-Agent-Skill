@@ -140,4 +140,4 @@ p <- graph_country |>
   coord_cartesian(xlim = c(-1.3, 1.3), ylim = c(-1.3, 1.3))
 
 ggsave(p, filename = file.path(script_dir, "花瓣富集图.pdf"))
-p
+

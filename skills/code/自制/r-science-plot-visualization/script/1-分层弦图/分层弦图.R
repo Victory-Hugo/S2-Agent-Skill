@@ -123,4 +123,3 @@ ggsave(
   height = 10,
   bg = "white"
 )
-p

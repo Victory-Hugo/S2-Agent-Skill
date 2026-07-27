@@ -175,5 +175,3 @@ ggsave(
   dpi = 300,
   bg = "white"
 )
-
-p2

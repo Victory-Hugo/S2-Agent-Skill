@@ -189,4 +189,3 @@ ggsave(
   bg = "#fbfaf7"
 )
 
-p6
