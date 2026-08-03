@@ -6,10 +6,10 @@ project:
   input_table: "input/sample.tsv"            # 该步骤的主输入文件
 
 paths:
-  output_table:  "output/1-data_preprocessing/1-table"   # 表格输出目录
-  output_figure: "output/1-data_preprocessing/2-figure"  # 图片输出目录（图与 TSV 同名伴出）
-  output_report: "output/1-data_preprocessing/3-report"  # 报告输出目录
-  temp:          "temp/1-data_preprocessing"             # 临时目录
+  output_result: "output/result/1-data_preprocessing"  # 结果目录（表格默认 tidy long）
+  output_figure: "output/figure/1-data_preprocessing"  # 图片目录（图与 TSV 同名伴出）
+  output_report: "output/report/1-data_preprocessing"  # 可选报告目录（仅 .md）
+  temp:          "temp/1-data_preprocessing"           # 中间文件和临时分析目录
 
 tools:
   conda_bin:         "/path/to/conda"        # conda 可执行文件

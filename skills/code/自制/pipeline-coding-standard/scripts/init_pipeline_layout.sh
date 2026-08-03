@@ -2,7 +2,8 @@
 # 将 assets/project-template/ 复制到目标目录，作为新 pipeline 项目的起点。
 # 模板包含：conf/1-data_preprocessing.yaml、pipe/1-data_preprocessing.sh 等。
 # 每新增一个 pipe 步骤，需同步新建对应编号的 conf/N-<name>.yaml，
-# 并在 output/N-<name>/ 下创建 1-table/、2-figure/、3-report/ 子目录。
+# 并在 output/result/、output/figure/、output/report/ 和 temp/ 下
+# 创建对应的 N-<name>/ 目录。
 set -euo pipefail
 
 if [[ $# -ne 1 ]]; then
@@ -27,6 +28,11 @@ fi
 
 mkdir -p "$TARGET_DIR"
 cp -R "$TEMPLATE_DIR"/. "$TARGET_DIR"/
+mkdir -p \
+    "$TARGET_DIR/output/result/1-data_preprocessing" \
+    "$TARGET_DIR/output/figure/1-data_preprocessing" \
+    "$TARGET_DIR/output/report/1-data_preprocessing" \
+    "$TARGET_DIR/temp/1-data_preprocessing"
 
 echo "[OK] Project template copied to: $TARGET_DIR"
 echo "[NOTE] Edit conf/1-data_preprocessing.yaml to configure step 1."

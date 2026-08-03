@@ -32,7 +32,7 @@ resolve_path() {
 
 require_var CFG_PROJECT_INPUT_TABLE
 require_var CFG_TOOLS_PYTHON_BIN
-require_var CFG_PATHS_OUTPUT_TABLE
+require_var CFG_PATHS_OUTPUT_RESULT
 require_var CFG_PATHS_OUTPUT_FIGURE
 require_var CFG_PATHS_OUTPUT_REPORT
 require_var CFG_PATHS_TEMP
@@ -40,17 +40,17 @@ require_var CFG_RUNTIME_JOBS
 
 PYTHON_BIN=$(resolve_path "$CFG_TOOLS_PYTHON_BIN")
 INPUT_TABLE=$(resolve_path "$CFG_PROJECT_INPUT_TABLE")
-OUTPUT_TABLE=$(resolve_path "$CFG_PATHS_OUTPUT_TABLE")
+OUTPUT_RESULT=$(resolve_path "$CFG_PATHS_OUTPUT_RESULT")
 OUTPUT_FIGURE=$(resolve_path "$CFG_PATHS_OUTPUT_FIGURE")
 OUTPUT_REPORT=$(resolve_path "$CFG_PATHS_OUTPUT_REPORT")
 TEMP_DIR=$(resolve_path "$CFG_PATHS_TEMP")
 JOBS="$CFG_RUNTIME_JOBS"
 
-mkdir -p "$OUTPUT_TABLE" "$OUTPUT_FIGURE" "$OUTPUT_REPORT" "$TEMP_DIR"
+mkdir -p "$OUTPUT_RESULT" "$OUTPUT_FIGURE" "$OUTPUT_REPORT" "$TEMP_DIR"
 
 "$PYTHON_BIN" "$PROJECT_ROOT/python/1-1-data_preprocessing.py" \
     --input  "$INPUT_TABLE" \
-    --output "$OUTPUT_TABLE" \
+    --output "$OUTPUT_RESULT" \
     --figure "$OUTPUT_FIGURE" \
     --jobs   "$JOBS"
 
