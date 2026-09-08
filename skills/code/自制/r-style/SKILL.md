@@ -47,7 +47,7 @@ size = 3      #* 点大小
 
 ## 6. PDF 出图
 
-需要导出可在 Illustrator 中逐标签独立编辑的 PDF 时：
+任何情况下，都需要导出可在 Illustrator 中逐标签独立编辑的 PDF：
 
 * 使用 `grDevices::pdf(..., family = "Arial", useDingbats = FALSE)`
 * 使用项目内注册的 Arial AFM 字体度量
