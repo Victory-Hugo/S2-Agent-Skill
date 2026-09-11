@@ -1,0 +1,50 @@
+dataset	sector	fuel	value	color_hex	sector_order	fuel_order
+ring	Electricity	Oil	2	#FFD060	1	1
+ring	Electricity	Gas	5	#B3B3B3	1	2
+ring	Electricity	Coal	8	#FA685B	1	3
+ring	Electricity	Biomass	2	#76B7B2	1	4
+ring	Electricity	Wind	7	#B2DF8A	1	5
+ring	Electricity	Solar	5	#85D4E3	1	6
+ring	Electricity	Electricity	18	#4B92F0	1	7
+ring	Industrial	Oil	8	#FFD060	2	1
+ring	Industrial	Gas	9	#B3B3B3	2	2
+ring	Industrial	Coal	15	#FA685B	2	3
+ring	Industrial	Biomass	3	#76B7B2	2	4
+ring	Industrial	Wind	1	#B2DF8A	2	5
+ring	Industrial	Solar	1	#85D4E3	2	6
+ring	Industrial	Electricity	10	#4B92F0	2	7
+ring	Road	Oil	30	#FFD060	3	1
+ring	Road	Gas	5	#B3B3B3	3	2
+ring	Road	Coal	0	#FA685B	3	3
+ring	Road	Biomass	2	#76B7B2	3	4
+ring	Road	Wind	0	#B2DF8A	3	5
+ring	Road	Solar	0	#85D4E3	3	6
+ring	Road	Electricity	7	#4B92F0	3	7
+ring	Buildings	Oil	4	#FFD060	4	1
+ring	Buildings	Gas	12	#B3B3B3	4	2
+ring	Buildings	Coal	4	#FA685B	4	3
+ring	Buildings	Biomass	3	#76B7B2	4	4
+ring	Buildings	Wind	1	#B2DF8A	4	5
+ring	Buildings	Solar	4	#85D4E3	4	6
+ring	Buildings	Electricity	16	#4B92F0	4	7
+ring	Residential fuel	Oil	3	#FFD060	5	1
+ring	Residential fuel	Gas	9	#B3B3B3	5	2
+ring	Residential fuel	Coal	5	#FA685B	5	3
+ring	Residential fuel	Biomass	7	#76B7B2	5	4
+ring	Residential fuel	Wind	0	#B2DF8A	5	5
+ring	Residential fuel	Solar	2	#85D4E3	5	6
+ring	Residential fuel	Electricity	12	#4B92F0	5	7
+ring	Non-road	Oil	15	#FFD060	6	1
+ring	Non-road	Gas	3	#B3B3B3	6	2
+ring	Non-road	Coal	1	#FA685B	6	3
+ring	Non-road	Biomass	1	#76B7B2	6	4
+ring	Non-road	Wind	0	#B2DF8A	6	5
+ring	Non-road	Solar	0	#85D4E3	6	6
+ring	Non-road	Electricity	4	#4B92F0	6	7
+pie	Total	Oil	28	#FFD060	0	1
+pie	Total	Gas	17	#B3B3B3	0	2
+pie	Total	Coal	16	#FA685B	0	3
+pie	Total	Biomass	7	#76B7B2	0	4
+pie	Total	Wind	6	#B2DF8A	0	5
+pie	Total	Solar	7	#85D4E3	0	6
+pie	Total	Electricity	19	#4B92F0	0	7

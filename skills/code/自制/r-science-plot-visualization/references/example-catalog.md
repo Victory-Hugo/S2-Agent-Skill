@@ -10,6 +10,7 @@
 | 构成 | 堆叠柱状图 | [R](../script/3-堆叠柱状图/堆叠柱状图.R) | tidyplots 内置数据 | 绘图窗口 |
 | 构成 | 堆积面积图 | [R](../script/3-堆积面积图/堆积面积图.R) | `microbiota.csv` | 绘图窗口 |
 | 构成 | 柱状图与饼图 | [R](../script/3-柱状图与饼图/统计柱状图饼图.R) | 命令行指定 | `分类统计_<列名>.pdf` |
+| 构成 | 环形堆叠条形图与饼图 | [R](../script/3-环形堆叠条形图与饼图/plot_ring_pie.R) | `plot_data.tsv`、`fonts/` | `ring_pie_chart_R.png`、`ring_pie_chart_R.pdf` |
 | 比较 | 柱状图带误差棒 | [R](../script/3-柱状图与饼图/柱状图带误差棒.R) | tidyplots 内置数据 | 绘图窗口 |
 | 比较 | 棒棒糖图 | [R](../script/3-棒棒糖图/棒棒糖图.R) | tidyplots 内置数据 | 绘图窗口 |
 | 分布 | 箱线图和小提琴图 | [R](../script/3-箱线图和小提琴图/箱线图和小提琴图.R) | tidyplots 内置数据 | `boxplot.pdf` |
