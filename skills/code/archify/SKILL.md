@@ -1,6 +1,6 @@
 ---
 name: archify
-description: Create polished, validated architecture, workflow, sequence, data-flow, and lifecycle/state diagrams as explorable standalone HTML with inline SVG, dark/light themes, optional trace motion, and PNG/JPEG/WebP/SVG/WebM export. Accept plain-language requirements or pasted Mermaid flowchart, sequenceDiagram, and stateDiagram input; inspect repository evidence when the diagram must reflect real code. Use when the user asks to visualize system architecture, infrastructure, cloud/security/network topology, technical workflows, API call sequences, request lifecycles, data pipelines, ETL/ELT, data lineage, state machines, or to convert/beautify Mermaid.
+description: 创建精美且经过验证的架构图、工作流程图、时序图、数据流图以及生命周期/状态图，以可探索的独立 HTML 形式呈现，支持内联 SVG、深色/浅色主题、可选的追踪动画，以及 PNG/JPEG/WebP/SVG/WebM 导出。
 license: MIT
 metadata:
   version: "2.17"

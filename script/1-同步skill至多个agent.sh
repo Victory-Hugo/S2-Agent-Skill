@@ -17,6 +17,7 @@ TARGET_DIRS=(
     "/home/luolintao/.codex-shared/skills/"
     "/home/luolintao/.codex-account-AICodeMirror/skills/"
     "/home/luolintao/.claude/skills/"
+    "/home/luolintao/.claude-share/skills"
     # 当存在2个claude官方账户时，无法使用cc-switch切换，创建2个/home/claude文件夹，并指向同一个skill
     "/home/luolintao/.copilot/skills/"
     "/home/luolintao/.claude-account-Biglin/skills/"
