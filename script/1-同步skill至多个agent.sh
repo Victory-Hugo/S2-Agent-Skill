@@ -21,7 +21,7 @@ TARGET_DIRS=(
     # 当存在2个claude官方账户时，无法使用cc-switch切换，创建2个/home/claude文件夹，并指向同一个skill
     "/home/luolintao/.copilot/skills/"
     "/home/luolintao/.claude-account-Biglin/skills/"
-    "/home/luolintao/.cc-switch/skills/"
+    # "/home/luolintao/.cc-switch/skills/"
     # "/mnt/c/Users/Administrator/.codex/vendor_imports/skills"
     # "/home/luolintao/.cursor/skills/"
     # 可以添加更多目标目录，例如：
