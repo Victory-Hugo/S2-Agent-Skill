@@ -18,7 +18,7 @@ conf/      # 每个步骤一个 YAML
 pipe/      # 每个步骤一个总控 .sh
 script/    # shell 辅助工具
 python/  R/  src/    # 各语言业务模块
-output/{result,figure,report}/<N>-<name>/
+output/{result,figure}/<N>-<name>/
 temp/<N>-<name>/     # 中间文件
 data/  input/  log/
 ```
@@ -39,10 +39,8 @@ data/  input/  log/
 ## Output
 
 1. `output/result/` 默认输出 TSV。这是**机器可读的完整精度数据**，不做四位有效数字取整。
-2. `output/figure/` 中每张图配一个同名 TSV，包含出图所用的全部数据，同样保留完整精度。
-3. 需要提交的 SCI 表格或附表，由最后一步调用 `sci-excel-table-generator` 从 TSV 导出，不在中间步骤手工格式化。
-4. `output/report/` 是否生成由用户决定；报告格式由用户指定，默认 `.md`。
-5. 所有中间文件放在项目根下的 `temp/<N>-<name>/`，禁止使用项目外目录（见 Debugging）。
+2. `output/figure/` 中每张图配一个同名 TSV，包含出图所用的全部数据，同样保留完整精度。只需要输出pdf格式的图，png、svg、jpg等格式不需要。
+3. 所有中间文件放在项目根下的 `temp/<N>-<name>/`，禁止使用项目外目录。
 
 ## Debugging
 

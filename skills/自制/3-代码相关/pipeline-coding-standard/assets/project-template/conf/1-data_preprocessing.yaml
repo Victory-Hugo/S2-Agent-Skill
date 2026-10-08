@@ -8,7 +8,6 @@ project:
 paths:
   output_result: "output/result/1-data_preprocessing"  # 结果目录（表格默认 tidy long）
   output_figure: "output/figure/1-data_preprocessing"  # 图片目录（图与 TSV 同名伴出）
-  output_report: "output/report/1-data_preprocessing"  # 可选报告目录（仅 .md）
   temp:          "temp/1-data_preprocessing"           # 中间文件和临时分析目录
 
 tools:
